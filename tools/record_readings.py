@@ -4,6 +4,7 @@
   py -3.11 tools/record_readings.py --list-models    models the key can call (Gemini API endpoint only)
   py -3.11 tools/record_readings.py                  record every example request
   py -3.11 tools/record_readings.py --only B,E       record some of them
+  py -3.11 tools/record_readings.py --out data/stability_run.json   a second run, not replayed by the app
 
 The key is never printed or saved. Each recording is appended to data/recorded_readings.json with
 what was sent, the raw reply and an automatic check against the prompt's success criteria.
@@ -96,13 +97,13 @@ def list_models(key):
     return 0
 
 
-def record(key, only, version, pause):
+def record(key, only, version, pause, store_path=STORE):
     endpoint, model = readings.live_settings()
     specs = load_json(ROOT / "data" / "requests.json")["requests"]
     if only:
         specs = [s for s in specs if s["id"] in set(only.split(","))]
     scenarios = load_json(ROOT / "data" / "scenarios.json")["scenarios"]
-    store = load_json(STORE) if STORE.exists() else {"note": NOTE, "recordings": []}
+    store = load_json(store_path) if store_path.exists() else {"note": NOTE, "recordings": []}
     print(f"Recording {len(specs)} request(s) with {endpoint} / {model}, prompt {version}.")
     failures = 0
     for i, spec in enumerate(specs):
@@ -126,8 +127,8 @@ def record(key, only, version, pause):
             verdict = ", ".join(f"{name} {'pass' if ok else 'FAIL'}" for name, ok in entry["check"].items())
             print(f"  {spec['id']}: {verdict} ({entry['latency_s']} s)\n{describe(generated)}")
         store["recordings"].append(entry)
-        STORE.write_text(json.dumps(store, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"Saved to {STORE.relative_to(ROOT)}.")
+        store_path.write_text(json.dumps(store, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"Saved to {store_path.relative_to(ROOT)}.")
     return 1 if failures else 0
 
 
@@ -139,6 +140,7 @@ def main():
     parser.add_argument("--only", help="comma-separated request ids, for example B,E")
     parser.add_argument("--prompt", default=readings.PROMPT_VERSION, help="prompt version, for example v1")
     parser.add_argument("--pause", type=float, default=4.0, help="seconds between calls (free-tier rate limits)")
+    parser.add_argument("--out", help="write to this file instead (the app only replays data/recorded_readings.json)")
     args = parser.parse_args()
     key = readings.api_key()
     if not key:
@@ -149,7 +151,7 @@ def main():
         return list_models(key)
     if args.check:
         return check(key)
-    return record(key, args.only, args.prompt, args.pause)
+    return record(key, args.only, args.prompt, args.pause, ROOT / args.out if args.out else STORE)
 
 
 if __name__ == "__main__":
