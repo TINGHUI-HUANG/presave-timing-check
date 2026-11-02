@@ -1,0 +1,40 @@
+{
+  "note": "Hand-written readings from Lab 3 (lab3/prototype/tests.json), stored in the same shape as a model reply. They stand in for model output and are labelled 'hand-written (simulated)' wherever they are used.",
+  "requests": [
+    {
+      "request": "When I arrive home after sunset, turn on the hallway light, and turn it off when I leave.",
+      "reply": {
+        "unsupported": "",
+        "readings": [
+          {
+            "label": "arrival after dark, off on leaving",
+            "rules": [
+              {"when": ["arrive"], "if": ["dark"], "device": "hallway_light", "do": "on"},
+              {"when": ["leave"], "if": [], "device": "hallway_light", "do": "off"}
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "request": "Turn on the hallway light when I'm home after dark.",
+      "reply": {
+        "unsupported": "",
+        "readings": [
+          {
+            "label": "arrival only",
+            "rules": [
+              {"when": ["arrive"], "if": ["dark"], "device": "hallway_light", "do": "on"}
+            ]
+          },
+          {
+            "label": "arrival or sunset",
+            "rules": [
+              {"when": ["arrive", "sunset"], "if": ["home", "dark"], "device": "hallway_light", "do": "on"}
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

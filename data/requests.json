@@ -1,0 +1,57 @@
+{
+  "note": "Example requests. 'intended' is what the student meant by each request, used only by the tests and tools/compare.py; the system never sees it. C-E were written by the student on 2 Nov 2026, before any model output existed. A and B are the Lab 3 test requests: their S1-S4 values are the Lab 3 intended behaviours and S5 follows from the Lab 3 intended notes. C, D and E each use one time word that Andrao et al. (2023) found people read differently: 'as soon as', 'while' and 'when'.",
+  "requests": [
+    {
+      "id": "A",
+      "text": "When I arrive home after sunset, turn on the hallway light, and turn it off when I leave.",
+      "about": "Lab 3 Test A: explicit timing",
+      "expect": "in_scope",
+      "intended_note": "On when I arrive after dark; nothing at sunset if I am already home; off when I leave.",
+      "intended": {"S1": "off", "S2": "on", "S3": "off", "S4": "off", "S5": "off"}
+    },
+    {
+      "id": "B",
+      "text": "Turn on the hallway light when I'm home after dark.",
+      "about": "Lab 3 Test B: vague timing",
+      "expect": "in_scope",
+      "intended_note": "On whenever I am home and it is dark, including at sunset if I am already home; off when I leave.",
+      "intended": {"S1": "on", "S2": "on", "S3": "off", "S4": "off", "S5": "off"}
+    },
+    {
+      "id": "C",
+      "text": "Turn on the hallway light as soon as I get home after dark.",
+      "about": "time word: as soon as",
+      "expect": "in_scope",
+      "intended_note": "On whenever I am home and it is dark; off when I leave.",
+      "intended": {"S1": "on", "S2": "on", "S3": "off", "S4": "off", "S5": "off"}
+    },
+    {
+      "id": "D",
+      "text": "Keep the hallway light on while I'm home after sunset.",
+      "about": "time word: while",
+      "expect": "in_scope",
+      "intended_note": "On whenever I am home and it is dark; off when I leave.",
+      "intended": {"S1": "on", "S2": "on", "S3": "off", "S4": "off", "S5": "off"}
+    },
+    {
+      "id": "E",
+      "text": "When it gets dark, turn on the hallway light.",
+      "about": "time word: when",
+      "expect": "in_scope",
+      "intended_note": "On whenever I am home and it is dark; off when I leave.",
+      "intended": {"S1": "on", "S2": "on", "S3": "off", "S4": "off", "S5": "off"}
+    },
+    {
+      "id": "F",
+      "text": "Lock the front door when I leave.",
+      "about": "out of scope: another device",
+      "expect": "out_of_scope"
+    },
+    {
+      "id": "G",
+      "text": "Turn off the hallway light two hours after I go to bed.",
+      "about": "out of scope: a delay and an unknown event",
+      "expect": "out_of_scope"
+    }
+  ]
+}

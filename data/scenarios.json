@@ -1,0 +1,59 @@
+{
+  "note": "Hand-built scenario library. Each scenario is one moment: a start state and one event, so a question asks about a single time. S1-S4 come from Lab 3; S5 was added for requests that start from sunset. 'probe' marks a bug-class boundary (Brackenbury et al., 2019); 'sets' is the condition the scenario's event makes true; 'repair' is the rule proposed when no reading gives the wanted outcome there.",
+  "sunset": "18:00",
+  "scenarios": [
+    {
+      "id": "S1",
+      "label": "home since 17:00, dark at 18:00",
+      "text": "You have been home since 17:00. At 18:00 it gets dark.",
+      "question": "Should the hallway light come on at 18:00?",
+      "yes": "on",
+      "start": {"home": true, "dark": false, "light": "off"},
+      "events": [["18:00", "sunset"]],
+      "probe": "flipped_trigger",
+      "sets": "dark",
+      "repair": {"on": {"when": ["sunset"], "if": ["home"], "device": "hallway_light", "do": "on"}}
+    },
+    {
+      "id": "S2",
+      "label": "arrive at 19:00, after dark",
+      "text": "It is dark. You arrive home at 19:00.",
+      "question": "Should the hallway light come on when you arrive?",
+      "yes": "on",
+      "start": {"home": false, "dark": true, "light": "off"},
+      "events": [["19:00", "arrive"]],
+      "probe": "flipped_trigger",
+      "sets": "home",
+      "repair": {"on": {"when": ["arrive"], "if": ["dark"], "device": "hallway_light", "do": "on"}}
+    },
+    {
+      "id": "S3",
+      "label": "arrive at 15:00, daylight",
+      "text": "It is daylight. You arrive home at 15:00.",
+      "question": "Should the hallway light come on when you arrive?",
+      "yes": "on",
+      "start": {"home": false, "dark": false, "light": "off"},
+      "events": [["15:00", "arrive"]]
+    },
+    {
+      "id": "S4",
+      "label": "light on, leave at 23:30",
+      "text": "The hallway light is on. You leave home at 23:30.",
+      "question": "Should the hallway light turn off when you leave?",
+      "yes": "off",
+      "start": {"home": true, "dark": true, "light": "on"},
+      "events": [["23:30", "leave"]],
+      "probe": "missing_reversal",
+      "repair": {"off": {"when": ["leave"], "if": [], "device": "hallway_light", "do": "off"}}
+    },
+    {
+      "id": "S5",
+      "label": "out at 18:00 when it gets dark",
+      "text": "You are out. At 18:00 it gets dark.",
+      "question": "Should the hallway light come on while you are out?",
+      "yes": "on",
+      "start": {"home": false, "dark": false, "light": "off"},
+      "events": [["18:00", "sunset"]]
+    }
+  ]
+}
