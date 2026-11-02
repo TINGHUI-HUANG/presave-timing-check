@@ -1,6 +1,6 @@
 # Pre-save timing check for one-sentence home automations
 
-*README prose: 1047 words (code, commands and file names not counted).*
+*README prose: 1189 words (code, commands and file names not counted).*
 Intelligent Interactive Systems, Assignment 2 (project Phase 2) · student 3189041 · submitted release `v1.0-a2`.
 
 A person types one sentence, such as "Turn on the hallway light when I'm home after dark". Before saving, the
@@ -14,8 +14,9 @@ including what it never does. Nothing is saved without Save.
 
 | Part | Status |
 |---|---|
-| Web page: request, question, repair, confirm or choose, decline, error and saved cards | Implemented |
-| Checker: reply checks, simulator, question choice (at most three), repair templates, restatement, log | Implemented, 34 tests |
+| Web page: Describe / Check / Save flow; question, repair, review, decline, error and saved cards | Implemented |
+| Back and Revisit: return to an earlier step or reopen an answer, with later answers kept and replayed | Implemented |
+| Checker: reply and conflict checks, simulator, question choice (at most three), repairs, restatement, log | Implemented, 46 tests |
 | Gemini readings, live with your own key | Implemented |
 | Gemini replies to the seven example requests, replayed without a key | Recorded 2 Nov 2026 (`gemini-3.5-flash`) |
 | Lab 3 hand-written readings for requests A and B | Simulated; a fallback only |
@@ -64,6 +65,8 @@ Each commit message says what changed, why, and how it was checked.
 | Recordings | `gemini-3.5-flash`, as older models are closed to new users; prompt v1 kept. | Six criteria, `docs/prompt_log.md` | [`86120dd`](https://github.com/TINGHUI-HUANG/presave-timing-check/commit/86120dd) [`ac33ade`](https://github.com/TINGHUI-HUANG/presave-timing-check/commit/ac33ade) |
 | Probe fix | `compare.py` (the comparison A1 planned, as a pilot) showed probes wasted on conditions another rule covered; in E the missing "off" was never asked. Probes now apply only where the whole reading does nothing. | Exposed 8/9 → 9/9 deviations, correct rules 4/5 → 5/5, questions 13 → 10 | [`687dfbf`](https://github.com/TINGHUI-HUANG/presave-timing-check/commit/687dfbf) [`b191477`](https://github.com/TINGHUI-HUANG/presave-timing-check/commit/b191477) |
 | Figures | Diagram and storyboards from code and real screens. Frames showed Yes and Save pre-focused (a default answer) and a decline claiming rules were drafted; both fixed. | Every frame looked at | [`f6f5197`](https://github.com/TINGHUI-HUANG/presave-timing-check/commit/f6f5197) [`b3819c3`](https://github.com/TINGHUI-HUANG/presave-timing-check/commit/b3819c3) |
+| My changes | I added Back and Revisit (later answers kept and replayed), rejection of rules that switch the light on and off at once, merging only of fully equivalent readings, retry-safe actions with session recovery, and a new Describe / Check / Save interface with an illustrated scene for each question. | 12 new tests; all 46 pass | [`96b8933`](https://github.com/TINGHUI-HUANG/presave-timing-check/commit/96b8933) |
+| Figures again | Storyboards recaptured for the new interface; storyboard 2 now shows Back. | Every frame looked at | [`fa6ba31`](https://github.com/TINGHUI-HUANG/presave-timing-check/commit/fa6ba31) |
 
 ## AI assistance
 
@@ -85,6 +88,9 @@ What I decided or checked myself:
   tracks; Claude checked that no commit contained it, and I restored the template and created `.env`. Claude never
   wrote the key into a file or command.
 - I chose my GitHub name and Gmail address for the commits instead of the QQ address in my Git settings.
+- I wrote commit `96b8933` by hand, without AI tools: Back and Revisit, the conflict check, stricter merging,
+  retry-safe actions and session recovery, the new interface and 12 tests. Claude Code reviewed it, ran the 46
+  tests and the comparison (results unchanged), recaptured the storyboards and committed it at my request.
 - I ran the prototype myself on 2 Nov 2026 (sessions marked `browser`). For A, I said Yes to the light coming on
   at 18:00 when I had been home since 17:00, although my sentence only mentions arriving; I added the proposed
   sunset rule before saving. My door-lock request was declined twice with no rule created. For C, I added both

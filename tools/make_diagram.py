@@ -58,21 +58,21 @@ def build():
     # Person column
     box(P, 60, 66, "Types one sentence", "or picks an example chip")
     box(P, 150, 66, "Decline or error card", "no rule is created")
-    box(P, 420, 66, "Question card", "situation · why · Yes/No/Not sure")
+    box(P, 420, 66, "Question card", "scene · why · Yes/No/Not sure · Back")
     box(P, 510, 66, "Repair card", "Add / Don't add / Edit")
-    box(P, 600, 66, "Confirm or choose card", "rule · what it never does")
+    box(P, 600, 66, "Confirm or choose card", "rule · never does · Revisit · Back")
     box(P, 690, 66, "Saved card", "saved in the prototype only")
 
     # Checker column
     box(C, 60, 66, "1  Assemble the context", "instruction v1 + the request, nothing else")
-    box(C, 150, 66, "2  Check the reply", "shape · vocabulary · ≤3 readings · merge twins")
+    box(C, 150, 66, "2  Check the reply", "shape · vocabulary · conflicts · ≤3 · merge twins")
     box(C, 240, 66, "3  Simulate", "every reading in every scenario")
     box(C, 330, 66, "4  Choose the next question", "differ → ask; last kept for a bug-class probe; ≤3",
         badge="decides when to ask")
     box(C, 420, 66, "5  Apply the answer", "keep matching readings; Not sure keeps all")
     box(C, 510, 66, "6  Propose a missing rule", "repair template of the probe scenario")
-    box(C, 600, 66, "7  Restate and wait", "from the rule itself; never saves on its own")
-    box(C, 690, 66, "8  Save once", "a second click cannot save twice")
+    box(C, 600, 66, "7  Restate and wait", "from the rule; Back/Revisit replay kept answers")
+    box(C, 690, 66, "8  Save once", "once per session, even on a retried click")
 
     # Model and data column
     box(D, 60, 66, "Gemini (LLM)", "1–3 readings as JSON", note="Implemented · live, needs a key", badge="AI")
@@ -117,7 +117,7 @@ def build():
     arrow([(cr, 745), (dl - 10, 745), (dl - 10, 795), (dl, 795)], dotted=True)
     arrow([(12, 640), (12, 75), (20, 75)], dotted=True)
     out.append('<text class="lab" x="8" y="400" transform="rotate(-90 8 400)" text-anchor="middle">'
-               'Edit or Try again returns the request to the box</text>')
+               'Back, Revisit, Edit or Try again return to an earlier step</text>')
 
     # Offline tools
     text(20, 852, "Offline tools (outside the interaction)", "h")

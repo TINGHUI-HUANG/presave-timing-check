@@ -31,7 +31,7 @@
 <text class="s" x="30" y="209" text-anchor="start">Implemented</text>
 <rect x="20" y="420" width="220" height="66" rx="7" fill="#e7f0ff" stroke="#2f5fb3" stroke-width="1.6"/>
 <text class="t" x="30" y="441" text-anchor="start">Question card</text>
-<text class="d" x="30" y="459" text-anchor="start">situation · why · Yes/No/Not sure</text>
+<text class="d" x="30" y="459" text-anchor="start">scene · why · Yes/No/Not sure · Back</text>
 <text class="s" x="30" y="479" text-anchor="start">Implemented</text>
 <rect x="20" y="510" width="220" height="66" rx="7" fill="#e7f0ff" stroke="#2f5fb3" stroke-width="1.6"/>
 <text class="t" x="30" y="531" text-anchor="start">Repair card</text>
@@ -39,7 +39,7 @@
 <text class="s" x="30" y="569" text-anchor="start">Implemented</text>
 <rect x="20" y="600" width="220" height="66" rx="7" fill="#e7f0ff" stroke="#2f5fb3" stroke-width="1.6"/>
 <text class="t" x="30" y="621" text-anchor="start">Confirm or choose card</text>
-<text class="d" x="30" y="639" text-anchor="start">rule · what it never does</text>
+<text class="d" x="30" y="639" text-anchor="start">rule · never does · Revisit · Back</text>
 <text class="s" x="30" y="659" text-anchor="start">Implemented</text>
 <rect x="20" y="690" width="220" height="66" rx="7" fill="#e7f0ff" stroke="#2f5fb3" stroke-width="1.6"/>
 <text class="t" x="30" y="711" text-anchor="start">Saved card</text>
@@ -51,7 +51,7 @@
 <text class="s" x="330" y="119" text-anchor="start">Implemented</text>
 <rect x="320" y="150" width="320" height="66" rx="7" fill="#e7f0ff" stroke="#2f5fb3" stroke-width="1.6"/>
 <text class="t" x="330" y="171" text-anchor="start">2  Check the reply</text>
-<text class="d" x="330" y="189" text-anchor="start">shape · vocabulary · ≤3 readings · merge twins</text>
+<text class="d" x="330" y="189" text-anchor="start">shape · vocabulary · conflicts · ≤3 · merge twins</text>
 <text class="s" x="330" y="209" text-anchor="start">Implemented</text>
 <rect x="320" y="240" width="320" height="66" rx="7" fill="#e7f0ff" stroke="#2f5fb3" stroke-width="1.6"/>
 <text class="t" x="330" y="261" text-anchor="start">3  Simulate</text>
@@ -73,11 +73,11 @@
 <text class="s" x="330" y="569" text-anchor="start">Implemented</text>
 <rect x="320" y="600" width="320" height="66" rx="7" fill="#e7f0ff" stroke="#2f5fb3" stroke-width="1.6"/>
 <text class="t" x="330" y="621" text-anchor="start">7  Restate and wait</text>
-<text class="d" x="330" y="639" text-anchor="start">from the rule itself; never saves on its own</text>
+<text class="d" x="330" y="639" text-anchor="start">from the rule; Back/Revisit replay kept answers</text>
 <text class="s" x="330" y="659" text-anchor="start">Implemented</text>
 <rect x="320" y="690" width="320" height="66" rx="7" fill="#e7f0ff" stroke="#2f5fb3" stroke-width="1.6"/>
 <text class="t" x="330" y="711" text-anchor="start">8  Save once</text>
-<text class="d" x="330" y="729" text-anchor="start">a second click cannot save twice</text>
+<text class="d" x="330" y="729" text-anchor="start">once per session, even on a retried click</text>
 <text class="s" x="330" y="749" text-anchor="start">Implemented</text>
 <rect x="700" y="60" width="220" height="66" rx="7" fill="#e7f0ff" stroke="#2f5fb3" stroke-width="1.6"/>
 <text class="t" x="710" y="81" text-anchor="start">Gemini (LLM)</text>
@@ -146,7 +146,7 @@
 <text class="lab" x="670.0" y="708" text-anchor="middle">rule</text>
 <path d="M640,745 L690,745 L690,795 L700,795" class="arrow" stroke-dasharray="3 3" marker-end="url(#head)"/>
 <path d="M12,640 L12,75 L20,75" class="arrow" stroke-dasharray="3 3" marker-end="url(#head)"/>
-<text class="lab" x="8" y="400" transform="rotate(-90 8 400)" text-anchor="middle">Edit or Try again returns the request to the box</text>
+<text class="lab" x="8" y="400" transform="rotate(-90 8 400)" text-anchor="middle">Back, Revisit, Edit or Try again return to an earlier step</text>
 <text class="h" x="20" y="852" text-anchor="start">Offline tools (outside the interaction)</text>
 <rect x="20" y="862" width="210" height="84" rx="7" fill="#e7f0ff" stroke="#2f5fb3" stroke-width="1.6"/>
 <text class="t" x="30" y="883" text-anchor="start">record_readings.py</text>
