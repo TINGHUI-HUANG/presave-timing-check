@@ -143,7 +143,7 @@ async function story(b, name, steps) {
 }
 
 async function stories(only) {
-  const b = await launch(820, 1400);
+  const b = await launch(430, 1600);
   try {
     for (const [name, steps] of Object.entries(STORIES)) {
       if (!only || only === name) await story(b, name, steps);

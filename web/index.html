@@ -70,6 +70,22 @@
           border-radius: 50%; animation: spin .8s linear infinite; vertical-align: -2px; margin-right: 6px; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .sr { position: absolute; left: -9999px; }
+  @media (max-width: 480px) {
+    body { font-size: 15px; }
+    main.wrap { padding: 10px 10px 32px; }
+    .card { padding: 11px 13px; margin-bottom: 9px; border-radius: 10px; }
+    .card h2 { margin-bottom: 5px; }
+    .scope { padding: 7px 10px; margin-bottom: 10px; }
+    textarea { min-height: 52px; padding: 8px; }
+    .chips { gap: 4px; margin-bottom: 8px; }
+    .chip { font-size: 12px; padding: 2px 9px; }
+    button { padding: 6px 13px; }
+    .row { gap: 6px; margin-top: 9px; }
+    .question, .quote { font-size: 16px; }
+    .situation { padding: 8px 10px; }
+    .why { margin-top: 7px; }
+    .done { padding: 8px 13px; }
+  }
 </style>
 </head>
 <body>
