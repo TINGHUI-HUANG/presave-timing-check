@@ -22,33 +22,34 @@ const PORT = 9333;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Each story is a list of steps: one or more actions, then the cards captured together as one frame.
-// The requests are example chips, so the readings are the recorded Gemini replies.
+// The requests are example chips, so the readings are the recorded Gemini replies. Answered questions
+// sit in a collapsed "Your answers" list, so each frame shows the card on screen at that moment.
 const STORIES = {
   // B: three readings; two questions where they differ, then a probe for an error all three share.
   s1: [
     { acts: [["example", "B"], ["create"]], frame: ["request", "question"] },
-    { acts: [["choice", "question", "yes"]], frame: ["done-1", "question"] },
-    { acts: [["choice", "question", "yes"]], frame: ["done-2", "question"] },
-    { acts: [["choice", "question", "yes"]], frame: ["done-3", "repair"] },
+    { acts: [["choice", "question", "yes"]], frame: ["question"] },
+    { acts: [["choice", "question", "yes"]], frame: ["question"] },
+    { acts: [["choice", "question", "yes"]], frame: ["repair"] },
     { acts: [["choice", "repair", "add"]], frame: ["confirm"] },
     { acts: [["choice", "confirm", "save"]], frame: ["saved"] },
   ],
-  // E: the person answers No, adds one proposed rule, is not sure about leaving, sees the gap stated.
+  // E: No, a proposed arrival rule, Not sure about leaving; then Back to change that answer.
   s2: [
     { acts: [["example", "E"], ["create"]], frame: ["request", "question"] },
-    { acts: [["choice", "question", "no"]], frame: ["done-1", "question"] },
-    { acts: [["choice", "question", "yes"]], frame: ["done-2", "repair"] },
-    { acts: [["choice", "repair", "add"]], frame: ["done-2", "question"] },
+    { acts: [["choice", "question", "no"]], frame: ["question"] },
+    { acts: [["choice", "question", "yes"]], frame: ["repair"] },
+    { acts: [["choice", "repair", "add"]], frame: ["question"] },
     { acts: [["choice", "question", "not_sure"]], frame: ["confirm"] },
-    { acts: [["choice", "confirm", "save"]], frame: ["saved"] },
+    { acts: [["back"], ["choice", "question", "yes"], ["choice", "repair", "add"]], frame: ["confirm"] },
   ],
   // F then C: an out-of-scope request is declined; one confident reading is still checked.
   s3: [
     { acts: [["example", "F"], ["create"]], frame: ["request", "declined"] },
     { acts: [["choice", "declined", "edit"], ["example", "C"], ["create"]], frame: ["request", "question"] },
-    { acts: [["choice", "question", "yes"]], frame: ["done-1", "repair"] },
-    { acts: [["choice", "repair", "add"]], frame: ["done-1", "question"] },
-    { acts: [["choice", "question", "yes"]], frame: ["done-2", "repair"] },
+    { acts: [["choice", "question", "yes"]], frame: ["repair"] },
+    { acts: [["choice", "repair", "add"]], frame: ["question"] },
+    { acts: [["choice", "question", "yes"]], frame: ["repair"] },
     { acts: [["choice", "repair", "add"]], frame: ["confirm"] },
   ],
 };
@@ -85,6 +86,8 @@ async function launch(width, height) {
   await send("Page.enable");
   await send("Runtime.enable");
   await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 2, mobile: false });
+  // Reduced motion makes the scene animations end at once, so every capture shows the same final frame.
+  await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
   const evaluate = async (expression) => {
     const r = await send("Runtime.evaluate", { expression, awaitPromise: true, returnByValue: true });
     if (r.exceptionDetails) throw new Error(r.exceptionDetails.exception?.description || expression);
@@ -130,10 +133,14 @@ const ACT = {
   create: () => `document.querySelector('#create').click()`,
   choice: (card, value) => `document.querySelector('[data-test="${card}"] button[data-choice="${value}"]').click()`,
   open: (card) => `document.querySelector('[data-test="${card}"] details').open = true`,
+  back: () => `document.querySelector('.back-step').click()`,
 };
-const WAITS = new Set(["create", "choice"]);   // actions that call the server and re-render
+const WAITS = new Set(["create", "choice", "back"]);   // actions that call the server and re-render
 
 async function story(b, name, steps) {
+  await b.navigate(APP);
+  // The page restores its last session from sessionStorage; every story starts from a clean page.
+  await b.evaluate("sessionStorage.clear()");
   await b.navigate(APP);
   // Mark every request from this page as scripted, for the session log.
   await b.evaluate(`(() => { const f = window.fetch; window.fetch = (u, o = {}) =>
@@ -153,7 +160,8 @@ async function story(b, name, steps) {
     }
     const clip = await b.evaluate(`(() => {
       window.scrollTo(0, 0);
-      const els = ${JSON.stringify(step.frame)}.map((t) => document.querySelector('[data-test="' + t + '"]')).filter(Boolean);
+      const els = ${JSON.stringify(step.frame)}.map((t) => document.querySelector('[data-test="' + t + '"]'))
+        .filter((e) => e && e.getBoundingClientRect().height > 0);
       if (!els.length) return null;
       const rs = els.map((e) => e.getBoundingClientRect());
       const top = Math.min(...rs.map((r) => r.top)) - 8, bottom = Math.max(...rs.map((r) => r.bottom)) + 8;
