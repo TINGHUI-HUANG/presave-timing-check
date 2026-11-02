@@ -24,6 +24,7 @@
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px;
           margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
   .card h2 { font-size: 14px; margin: 0 0 8px; color: var(--muted); font-weight: 600; }
+  .card:focus, .card:focus-visible { outline: none; }
   textarea { width: 100%; min-height: 64px; font: inherit; padding: 10px; border: 1px solid var(--line);
              border-radius: 8px; resize: vertical; }
   .examples { font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
@@ -168,11 +169,13 @@ async function act(path, body, button) {
   } finally { busy = false; }
 }
 
-function sourceText(src) {
+function sourceText(src, kind) {
   if (!src) return "";
   const day = (t) => (t ? new Date(t).toLocaleDateString("en-GB", {day: "numeric", month: "short", year: "numeric"}) : "");
-  if (src.kind === "recorded") return `Rules drafted by ${esc(src.model)} (recorded ${day(src.time)}); outcomes worked out by the simulator.`;
-  if (src.kind === "live") return `Rules drafted just now by ${esc(src.model)} in ${src.latency_s} s; outcomes worked out by the simulator.`;
+  const by = src.kind === "recorded" ? `${esc(src.model)} (recorded ${day(src.time)})`
+    : src.kind === "live" ? `${esc(src.model)} just now, in ${src.latency_s} s` : "";
+  if (["declined", "error"].includes(kind)) return by ? `Request read by ${by}. No rule was drafted.` : "";
+  if (by) return `Rules drafted by ${by}; outcomes worked out by the simulator.`;
   if (src.kind === "fixed") return "Rules hand-written in Lab 3 (simulated model output); outcomes worked out by the simulator.";
   return "";
 }
@@ -195,7 +198,7 @@ function render() {
   const thread = $("#thread");
   thread.innerHTML = "";
   thread.append(card("request", `<h2>Your request</h2><div class="quote">“${esc(view.request)}”</div>
-    <div class="badge">${sourceText(view.source)}</div>`));
+    <div class="badge">${sourceText(view.source, view.card.kind)}</div>`));
   for (const h of view.history) {
     thread.append(card(`done-${h.number}`, `Q${h.number} · ${esc(h.situation)} ${esc(h.question)} → <b>${esc(h.answer)}</b>` +
       (h.note ? `<div class="note">${esc(h.note)}</div>` : ""), "done"));
@@ -248,9 +251,11 @@ function render() {
   }
   thread.append(el);
   renderInspect(view.inspect);
-  const first = el.querySelector("button");
+  // Focus the new card, not its first button: a pre-focused Yes or Save would be a default answer
+  // chosen for the person (Lecture 06: defaults and anchors are decisions made on the user's behalf).
+  el.setAttribute("tabindex", "-1");
   el.scrollIntoView({block: "nearest"});
-  if (first) first.focus({preventScroll: true});
+  el.focus({preventScroll: true});
 }
 
 function wire(el, route) {

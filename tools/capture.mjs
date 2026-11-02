@@ -21,15 +21,35 @@ const APP = process.env.APP_URL || "http://localhost:8020";
 const PORT = 9333;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// Each story is a list of steps: an action, then the cards to capture together as one frame.
+// Each story is a list of steps: one or more actions, then the cards captured together as one frame.
+// The requests are example chips, so the readings are the recorded Gemini replies.
 const STORIES = {
+  // B: three readings; two questions where they differ, then a probe for an error all three share.
   s1: [
-    { act: ["example", "B"], frame: ["compose"] },
-    { act: ["create"], frame: ["request", "question"] },
-    { act: ["choice", "question", "yes"], frame: ["done-1", "question"] },
-    { act: ["choice", "question", "yes"], frame: ["done-2", "repair"] },
-    { act: ["choice", "repair", "add"], frame: ["confirm"] },
-    { act: ["choice", "confirm", "save"], frame: ["saved"] },
+    { acts: [["example", "B"], ["create"]], frame: ["request", "question"] },
+    { acts: [["choice", "question", "yes"]], frame: ["done-1", "question"] },
+    { acts: [["choice", "question", "yes"]], frame: ["done-2", "question"] },
+    { acts: [["choice", "question", "yes"]], frame: ["done-3", "repair"] },
+    { acts: [["choice", "repair", "add"]], frame: ["confirm"] },
+    { acts: [["choice", "confirm", "save"]], frame: ["saved"] },
+  ],
+  // E: the person answers No, adds one proposed rule, is not sure about leaving, sees the gap stated.
+  s2: [
+    { acts: [["example", "E"], ["create"]], frame: ["request", "question"] },
+    { acts: [["choice", "question", "no"]], frame: ["done-1", "question"] },
+    { acts: [["choice", "question", "yes"]], frame: ["done-2", "repair"] },
+    { acts: [["choice", "repair", "add"]], frame: ["done-2", "question"] },
+    { acts: [["choice", "question", "not_sure"]], frame: ["confirm"] },
+    { acts: [["choice", "confirm", "save"]], frame: ["saved"] },
+  ],
+  // F then C: an out-of-scope request is declined; one confident reading is still checked.
+  s3: [
+    { acts: [["example", "F"], ["create"]], frame: ["request", "declined"] },
+    { acts: [["choice", "declined", "edit"], ["example", "C"], ["create"]], frame: ["request", "question"] },
+    { acts: [["choice", "question", "yes"]], frame: ["done-1", "repair"] },
+    { acts: [["choice", "repair", "add"]], frame: ["done-1", "question"] },
+    { acts: [["choice", "question", "yes"]], frame: ["done-2", "repair"] },
+    { acts: [["choice", "repair", "add"]], frame: ["confirm"] },
   ],
 };
 
@@ -109,7 +129,9 @@ const ACT = {
   type: (text) => `document.querySelector('#req').value = ${JSON.stringify(text)}`,
   create: () => `document.querySelector('#create').click()`,
   choice: (card, value) => `document.querySelector('[data-test="${card}"] button[data-choice="${value}"]').click()`,
+  open: (card) => `document.querySelector('[data-test="${card}"] details').open = true`,
 };
+const WAITS = new Set(["create", "choice"]);   // actions that call the server and re-render
 
 async function story(b, name, steps) {
   await b.navigate(APP);
@@ -117,16 +139,17 @@ async function story(b, name, steps) {
   await b.evaluate(`(() => { const f = window.fetch; window.fetch = (u, o = {}) =>
     f(u, { ...o, headers: { ...(o.headers || {}), "X-Driver": "capture-script" } }); return true; })()`);
   for (const [n, step] of steps.entries()) {
-    const [kind, ...args] = step.act;
-    const before = await b.evaluate(`document.querySelector('#thread').innerHTML.length`);
-    await b.evaluate(ACT[kind](...args));
-    if (kind !== "example" && kind !== "type") {
-      for (let i = 0; i < 120; i++) {   // wait for the response to render (a live call can take seconds)
-        await sleep(250);
-        const ready = await b.evaluate(`!document.querySelector('.spin') && document.querySelector('#thread').innerHTML.length !== ${before}`);
-        if (ready) break;
+    for (const [kind, ...args] of step.acts) {
+      const before = await b.evaluate(`document.querySelector('#thread').innerHTML`);
+      await b.evaluate(ACT[kind](...args));
+      if (WAITS.has(kind)) {
+        for (let i = 0; i < 120; i++) {   // wait for the response to render (a live call can take seconds)
+          await sleep(250);
+          const ready = await b.evaluate(`!document.querySelector('.spin') && document.querySelector('#thread').innerHTML !== ${JSON.stringify(before)}`);
+          if (ready) break;
+        }
       }
-      await sleep(300);
+      await sleep(350);
     }
     const clip = await b.evaluate(`(() => {
       window.scrollTo(0, 0);
@@ -146,7 +169,13 @@ async function stories(only) {
   const b = await launch(430, 1600);
   try {
     for (const [name, steps] of Object.entries(STORIES)) {
-      if (!only || only === name) await story(b, name, steps);
+      if (only && only !== name) continue;
+      try {
+        await story(b, name, steps);
+      } catch (error) {   // a slow response can outrun the waits; one retry from a fresh page
+        console.log(`${name} failed (${error.message}); retrying once`);
+        await story(b, name, steps);
+      }
     }
   } finally { await b.close(); }
 }

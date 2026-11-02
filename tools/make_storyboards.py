@@ -15,13 +15,29 @@ SCREENS = ROOT / "docs" / "screens"
 FONTS = Path("C:/Windows/Fonts")
 
 STORIES = {
-    "storyboard_1": ("A vague request: two readings and an error they share", [
-        ("s1_1.png", "Person types a vague request"),
-        ("s1_2.png", "Asked where the two readings differ"),
+    "storyboard_1": ("Three readings narrowed, then an error all three share", [
+        ("s1_1.png", "Asked where the three readings differ"),
+        ("s1_2.png", "Yes; asked where the last two differ"),
         ("s1_3.png", "Yes; then a bug-class probe: leaving"),
         ("s1_4.png", "Yes; no reading turns the light off"),
         ("s1_5.png", "Adds the rule; reads the restatement"),
-        ("s1_6.png", "Chooses Save; only now is it saved"),
+        ("s1_6.png", "Saves; only now is the rule stored"),
+    ]),
+    "storyboard_2": ("Answering No, adding a rule, leaving one answer open", [
+        ("s2_1.png", "Asked where two readings differ"),
+        ("s2_2.png", "No; then a probe: arriving after dark"),
+        ("s2_3.png", "Yes; offered the missing arrival rule"),
+        ("s2_4.png", "Adds it; last question: leaving"),
+        ("s2_5.png", "Not sure; the gap is stated before Save"),
+        ("s2_6.png", "Saves anyway; the note stays visible"),
+    ]),
+    "storyboard_3": ("A decline, then one confident reading that is still checked", [
+        ("s3_1.png", "Asks for a door lock: declined"),
+        ("s3_2.png", "Edits; one reading; probe: dark at home"),
+        ("s3_3.png", "Yes; offered the missing sunset rule"),
+        ("s3_4.png", "Adds it; then a probe: leaving"),
+        ("s3_5.png", "Yes; offered the missing off rule"),
+        ("s3_6.png", "Adds it; the rule now has three parts"),
     ]),
 }
 
