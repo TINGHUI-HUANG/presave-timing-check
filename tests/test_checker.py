@@ -118,6 +118,26 @@ class Behaviour(unittest.TestCase):
         scenario, reason = selector.next_scenario([reading], SCENARIOS, [], "combined")
         self.assertEqual((scenario["id"], reason), ("S2", "flipped_trigger"))
 
+    def test_probe_skips_a_condition_another_rule_covers(self):
+        # Gemini's readings of D: both act at sunset and on arrival; they differ only on leaving.
+        both = [rule(["sunset"], ["home"], "on"), rule(["arrive"], ["dark"], "on")]
+        d = [{"id": "R1", "label": "off on leaving", "rules": both + [rule(["leave"], [], "off")]},
+             {"id": "R2", "label": "never off", "rules": list(both)}]
+        run = scripted.run(d, SCENARIOS, REQUESTS["D"]["intended"], "combined")
+        self.assertEqual(run["asked"], ["S4"])
+
+    def test_shared_errors_are_raised_within_three_questions(self):
+        # Gemini's readings of E: neither acts on arrival after dark and neither turns the light off.
+        e = [{"id": "R1", "label": "sunset", "rules": [rule(["sunset"], [], "on")]},
+             {"id": "R2", "label": "sunset if home", "rules": [rule(["sunset"], ["home"], "on")]}]
+        run = scripted.run(e, SCENARIOS, REQUESTS["E"]["intended"], "combined")
+        self.assertEqual(run["asked"], ["S5", "S2", "S4"])
+        self.assertEqual([s["reason"] for s in run["steps"]], ["differ", "flipped_trigger", "missing_reversal"])
+        final = run["remaining"][0]
+        self.assertTrue(all(simulator.simulate(final, s) == REQUESTS["E"]["intended"][s["id"]] for s in SCENARIOS))
+        divergence = scripted.run(e, SCENARIOS, REQUESTS["E"]["intended"], "divergence")
+        self.assertEqual(divergence["asked"], ["S5"])
+
     def test_budget_is_never_exceeded(self):
         readings = fixed("B")
         for strategy in selector.STRATEGIES:

@@ -33,14 +33,25 @@ def lacks_reversal(reading):
     return "on" in actions and "off" not in actions
 
 
+def inert(reading, scenario):
+    """No rule of the reading changes the light in this scenario."""
+    return simulate(reading, scenario) == scenario["start"]["light"]
+
+
 def probes(readings, scenarios):
-    """Bug-class scenarios that the readings' structure calls for, in library order."""
-    gaps = set().union(*(uncovered(r) for r in readings)) if readings else set()
+    """Bug-class scenarios that the readings' structure calls for, in library order.
+
+    A flipped-trigger probe applies only if a reading has a rule whose condition is uncovered AND
+    the reading as a whole does nothing in the probe scenario. Checking rules one at a time (the
+    first version) also probed conditions that another rule of the same reading already covers,
+    which spent questions for nothing (found with tools/compare.py on requests D and E).
+    """
     no_off = any(lacks_reversal(r) for r in readings)
     out = []
     for s in scenarios:
-        if s.get("probe") == "flipped_trigger" and s.get("sets") in gaps:
-            out.append(s)
+        if s.get("probe") == "flipped_trigger":
+            if any(s.get("sets") in uncovered(r) and inert(r, s) for r in readings):
+                out.append(s)
         elif s.get("probe") == "missing_reversal" and no_off:
             out.append(s)
     return out

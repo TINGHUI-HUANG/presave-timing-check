@@ -20,7 +20,7 @@ Random is the mean of 20 seeds. Cells: deviations exposed / shared deviations ex
 |---|---|---|---|
 | divergence | 3/9 · 0/5 · 2/5 · 3 | 4/9 · 0/5 · 2/5 · 4 | 4/9 · 0/5 · 2/5 · 4 |
 | boundary | 2/9 · 1/5 · 1/5 · 5 | 4/9 · 2/5 · 1/5 · 10 | 8/9 · 5/5 · 4/5 · 15 |
-| combined | 3/9 · 3/5 · 1/5 · 5 | 6/9 · 3/5 · 2/5 · 9 | 8/9 · 4/5 · 4/5 · 13 |
+| combined | 4/9 · 3/5 · 2/5 · 5 | 7/9 · 4/5 · 3/5 · 8 | 9/9 · 5/5 · 5/5 · 10 |
 | random | 1.9/9 · 1.1/5 · 1.2/5 · 5 | 3.6/9 · 2.1/5 · 1.4/5 · 10 | 5.5/9 · 3.1/5 · 2.1/5 · 15 |
 
 ## Questions asked with a budget of three (random: seed 0)
@@ -29,8 +29,8 @@ Random is the mean of 20 seeds. Cells: deviations exposed / shared deviations ex
 |---|---|---|---|---|
 | A | none (saved rule correct) | S1, S2, S4 (saved rule correct) | S1 (saved rule correct) | S4, S5, S1 (saved rule correct) |
 | B | S1*, S2* (saved rule wrong) | S1*, S2*, S4* (saved rule correct) | S1*, S2*, S4* (saved rule correct) | S4*, S5, S1* (2 rules left) |
-| C | none (saved rule wrong) | S1*, S2, S4* (saved rule correct) | S1*, S2, S4* (saved rule correct) | S4*, S5, S1* (saved rule correct) |
-| D | S4* (saved rule correct) | S1, S2, S4* (saved rule correct) | S4*, S1, S2 (saved rule correct) | S4*, S5, S1 (saved rule correct) |
-| E | S5* (saved rule wrong) | S1, S2*, S4* (2 rules left) | S5*, S2*, S1 (saved rule wrong) | S4*, S5*, S1 (saved rule wrong) |
+| C | none (saved rule wrong) | S1*, S2, S4* (saved rule correct) | S1*, S4* (saved rule correct) | S4*, S5, S1* (saved rule correct) |
+| D | S4* (saved rule correct) | S1, S2, S4* (saved rule correct) | S4* (saved rule correct) | S4*, S5, S1 (saved rule correct) |
+| E | S5* (saved rule wrong) | S1, S2*, S4* (2 rules left) | S5*, S2*, S4* (saved rule correct) | S4*, S5*, S1 (saved rule wrong) |
 
 `*` marks a question that exposed a deviation.
