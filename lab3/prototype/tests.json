@@ -1,0 +1,40 @@
+{
+  "A": {
+    "title": "Test A: standard input",
+    "request": "When I arrive home after sunset, turn on the hallway light, and turn it off when I leave.",
+    "readings": [
+      {
+        "id": "R1",
+        "label": "arrival after dark, off on leaving",
+        "rules": [
+          {"when": ["arrive"], "if": ["dark"], "device": "hallway_light", "do": "on"},
+          {"when": ["leave"], "if": [], "device": "hallway_light", "do": "off"}
+        ]
+      }
+    ],
+    "intended_note": "On when I arrive after dark; nothing at sunset if I am already home; off when I leave.",
+    "intended": {"S1": "off", "S2": "on", "S3": "off", "S4": "off"}
+  },
+  "B": {
+    "title": "Test B: problem input",
+    "request": "Turn on the hallway light when I'm home after dark.",
+    "readings": [
+      {
+        "id": "A",
+        "label": "arrival only",
+        "rules": [
+          {"when": ["arrive"], "if": ["dark"], "device": "hallway_light", "do": "on"}
+        ]
+      },
+      {
+        "id": "B",
+        "label": "arrival or sunset",
+        "rules": [
+          {"when": ["arrive", "sunset"], "if": ["home", "dark"], "device": "hallway_light", "do": "on"}
+        ]
+      }
+    ],
+    "intended_note": "On whenever I am home and it is dark, including at sunset if I am already home; off when I leave.",
+    "intended": {"S1": "on", "S2": "on", "S3": "off", "S4": "off"}
+  }
+}

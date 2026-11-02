@@ -1,0 +1,14 @@
+# Secrets: an API key must never be committed
+.env
+*.env
+!.env.example
+
+# Local run output (each run writes these)
+logs/
+data/saved_rules.json
+
+# Python and editor files
+__pycache__/
+*.pyc
+.idea/
+.vscode/

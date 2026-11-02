@@ -1,0 +1,43 @@
+{
+  "sunset": "18:00",
+  "scenarios": [
+    {
+      "id": "S1",
+      "label": "home since 17:00, dark at 18:00",
+      "text": "You have been home since 17:00. At 18:00 it gets dark.",
+      "question": "Should the hallway light come on at 18:00?",
+      "yes": "on",
+      "start": {"home": true, "dark": false, "light": "off"},
+      "events": [["18:00", "sunset"]],
+      "bug_class": "flipped_trigger"
+    },
+    {
+      "id": "S2",
+      "label": "arrive at 19:00, after dark",
+      "text": "It is dark. You arrive home at 19:00.",
+      "question": "Should the hallway light come on when you arrive?",
+      "yes": "on",
+      "start": {"home": false, "dark": true, "light": "off"},
+      "events": [["19:00", "arrive"]]
+    },
+    {
+      "id": "S3",
+      "label": "arrive at 15:00, daylight",
+      "text": "It is daylight. You arrive home at 15:00.",
+      "question": "Should the hallway light come on when you arrive?",
+      "yes": "on",
+      "start": {"home": false, "dark": false, "light": "off"},
+      "events": [["15:00", "arrive"]]
+    },
+    {
+      "id": "S4",
+      "label": "light on, leave at 23:30",
+      "text": "The hallway light is on. You leave home at 23:30.",
+      "question": "Should the hallway light turn off when you leave?",
+      "yes": "off",
+      "start": {"home": true, "dark": true, "light": "on"},
+      "events": [["23:30", "leave"]],
+      "bug_class": "missing_reversal"
+    }
+  ]
+}
