@@ -1,0 +1,229 @@
+{
+  "note": "Live Gemini replies to the example requests, recorded with tools/record_readings.py. The web app replays the latest successful recording of a request, so reviewers need no key. 'context' is exactly what was sent; 'check' is the automatic check against the prompt's success criteria.",
+  "recordings": [
+    {
+      "request_id": "A",
+      "request": "When I arrive home after sunset, turn on the hallway light, and turn it off when I leave.",
+      "time": "2026-11-02T21:00:52+00:00",
+      "endpoint": "gemini-api",
+      "model": "gemini-3.5-flash",
+      "prompt_version": "v1",
+      "temperature": 0.4,
+      "context": {
+        "prompt_version": "v1",
+        "instruction": "TASK\nYou translate one sentence, written by a person who does not program, into candidate rules for a home automation. A simple simulator will run the rules, and the person will check them before anything is saved.\n\nReturn between one and three READINGS of the request. A reading is a set of rules. Give more than one reading only when the request can reasonably be understood to switch the light at different times; the readings must then behave differently in at least one situation. If the timing is clear, return exactly one reading.\n\nVOCABULARY (use these words and nothing else)\n- device: \"hallway_light\"\n- events (\"when\"): \"arrive\" = the person arrives home; \"leave\" = the person leaves home; \"sunset\" = it gets dark\n- conditions (\"if\"): \"home\" = the person is at home; \"dark\" = it is dark\n- actions (\"do\"): \"on\", \"off\"\nA rule fires when any one of its events happens and all of its conditions are true just after that event.\n\nCONSTRAINTS\n- Include only behaviour that the request states or clearly implies. Do not add rules the person did not ask for.\n- If the request needs anything outside the vocabulary (another device, a clock time, a delay such as \"two hours after\", or an event such as going to bed), return no readings and say in a few words what is missing in \"unsupported\". Otherwise set \"unsupported\" to an empty string.\n- Each \"label\" says, in at most eight plain words, how that reading understands the timing.\n\nEXAMPLE\nRequest: \"Turn on the hallway light when I arrive home.\"\nReply: {\"unsupported\": \"\", \"readings\": [{\"label\": \"on whenever I arrive home\", \"rules\": [{\"when\": [\"arrive\"], \"if\": [], \"device\": \"hallway_light\", \"do\": \"on\"}]}]}\n\nA GOOD REPLY\n- is JSON that matches the response schema;\n- uses only the vocabulary above;\n- gives one reading for a clear request, and two or three readings that behave differently for a vague one;\n- for a request outside the vocabulary, gives no readings and a non-empty \"unsupported\".\n",
+        "request": "Request: \"When I arrive home after sunset, turn on the hallway light, and turn it off when I leave.\""
+      },
+      "error": "HTTP 503: This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."
+    },
+    {
+      "request_id": "B",
+      "request": "Turn on the hallway light when I'm home after dark.",
+      "time": "2026-11-02T21:00:59+00:00",
+      "endpoint": "gemini-api",
+      "model": "gemini-3.5-flash",
+      "prompt_version": "v1",
+      "temperature": 0.4,
+      "context": {
+        "prompt_version": "v1",
+        "instruction": "TASK\nYou translate one sentence, written by a person who does not program, into candidate rules for a home automation. A simple simulator will run the rules, and the person will check them before anything is saved.\n\nReturn between one and three READINGS of the request. A reading is a set of rules. Give more than one reading only when the request can reasonably be understood to switch the light at different times; the readings must then behave differently in at least one situation. If the timing is clear, return exactly one reading.\n\nVOCABULARY (use these words and nothing else)\n- device: \"hallway_light\"\n- events (\"when\"): \"arrive\" = the person arrives home; \"leave\" = the person leaves home; \"sunset\" = it gets dark\n- conditions (\"if\"): \"home\" = the person is at home; \"dark\" = it is dark\n- actions (\"do\"): \"on\", \"off\"\nA rule fires when any one of its events happens and all of its conditions are true just after that event.\n\nCONSTRAINTS\n- Include only behaviour that the request states or clearly implies. Do not add rules the person did not ask for.\n- If the request needs anything outside the vocabulary (another device, a clock time, a delay such as \"two hours after\", or an event such as going to bed), return no readings and say in a few words what is missing in \"unsupported\". Otherwise set \"unsupported\" to an empty string.\n- Each \"label\" says, in at most eight plain words, how that reading understands the timing.\n\nEXAMPLE\nRequest: \"Turn on the hallway light when I arrive home.\"\nReply: {\"unsupported\": \"\", \"readings\": [{\"label\": \"on whenever I arrive home\", \"rules\": [{\"when\": [\"arrive\"], \"if\": [], \"device\": \"hallway_light\", \"do\": \"on\"}]}]}\n\nA GOOD REPLY\n- is JSON that matches the response schema;\n- uses only the vocabulary above;\n- gives one reading for a clear request, and two or three readings that behave differently for a vague one;\n- for a request outside the vocabulary, gives no readings and a non-empty \"unsupported\".\n",
+        "request": "Request: \"Turn on the hallway light when I'm home after dark.\""
+      },
+      "error": "HTTP 503: This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."
+    },
+    {
+      "request_id": "C",
+      "request": "Turn on the hallway light as soon as I get home after dark.",
+      "time": "2026-11-02T21:01:30+00:00",
+      "endpoint": "gemini-api",
+      "model": "gemini-3.5-flash",
+      "prompt_version": "v1",
+      "temperature": 0.4,
+      "context": {
+        "prompt_version": "v1",
+        "instruction": "TASK\nYou translate one sentence, written by a person who does not program, into candidate rules for a home automation. A simple simulator will run the rules, and the person will check them before anything is saved.\n\nReturn between one and three READINGS of the request. A reading is a set of rules. Give more than one reading only when the request can reasonably be understood to switch the light at different times; the readings must then behave differently in at least one situation. If the timing is clear, return exactly one reading.\n\nVOCABULARY (use these words and nothing else)\n- device: \"hallway_light\"\n- events (\"when\"): \"arrive\" = the person arrives home; \"leave\" = the person leaves home; \"sunset\" = it gets dark\n- conditions (\"if\"): \"home\" = the person is at home; \"dark\" = it is dark\n- actions (\"do\"): \"on\", \"off\"\nA rule fires when any one of its events happens and all of its conditions are true just after that event.\n\nCONSTRAINTS\n- Include only behaviour that the request states or clearly implies. Do not add rules the person did not ask for.\n- If the request needs anything outside the vocabulary (another device, a clock time, a delay such as \"two hours after\", or an event such as going to bed), return no readings and say in a few words what is missing in \"unsupported\". Otherwise set \"unsupported\" to an empty string.\n- Each \"label\" says, in at most eight plain words, how that reading understands the timing.\n\nEXAMPLE\nRequest: \"Turn on the hallway light when I arrive home.\"\nReply: {\"unsupported\": \"\", \"readings\": [{\"label\": \"on whenever I arrive home\", \"rules\": [{\"when\": [\"arrive\"], \"if\": [], \"device\": \"hallway_light\", \"do\": \"on\"}]}]}\n\nA GOOD REPLY\n- is JSON that matches the response schema;\n- uses only the vocabulary above;\n- gives one reading for a clear request, and two or three readings that behave differently for a vague one;\n- for a request outside the vocabulary, gives no readings and a non-empty \"unsupported\".\n",
+        "request": "Request: \"Turn on the hallway light as soon as I get home after dark.\""
+      },
+      "error": "HTTP 503: This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."
+    },
+    {
+      "request_id": "D",
+      "request": "Keep the hallway light on while I'm home after sunset.",
+      "time": "2026-11-02T21:01:36+00:00",
+      "endpoint": "gemini-api",
+      "model": "gemini-3.5-flash",
+      "prompt_version": "v1",
+      "temperature": 0.4,
+      "context": {
+        "prompt_version": "v1",
+        "instruction": "TASK\nYou translate one sentence, written by a person who does not program, into candidate rules for a home automation. A simple simulator will run the rules, and the person will check them before anything is saved.\n\nReturn between one and three READINGS of the request. A reading is a set of rules. Give more than one reading only when the request can reasonably be understood to switch the light at different times; the readings must then behave differently in at least one situation. If the timing is clear, return exactly one reading.\n\nVOCABULARY (use these words and nothing else)\n- device: \"hallway_light\"\n- events (\"when\"): \"arrive\" = the person arrives home; \"leave\" = the person leaves home; \"sunset\" = it gets dark\n- conditions (\"if\"): \"home\" = the person is at home; \"dark\" = it is dark\n- actions (\"do\"): \"on\", \"off\"\nA rule fires when any one of its events happens and all of its conditions are true just after that event.\n\nCONSTRAINTS\n- Include only behaviour that the request states or clearly implies. Do not add rules the person did not ask for.\n- If the request needs anything outside the vocabulary (another device, a clock time, a delay such as \"two hours after\", or an event such as going to bed), return no readings and say in a few words what is missing in \"unsupported\". Otherwise set \"unsupported\" to an empty string.\n- Each \"label\" says, in at most eight plain words, how that reading understands the timing.\n\nEXAMPLE\nRequest: \"Turn on the hallway light when I arrive home.\"\nReply: {\"unsupported\": \"\", \"readings\": [{\"label\": \"on whenever I arrive home\", \"rules\": [{\"when\": [\"arrive\"], \"if\": [], \"device\": \"hallway_light\", \"do\": \"on\"}]}]}\n\nA GOOD REPLY\n- is JSON that matches the response schema;\n- uses only the vocabulary above;\n- gives one reading for a clear request, and two or three readings that behave differently for a vague one;\n- for a request outside the vocabulary, gives no readings and a non-empty \"unsupported\".\n",
+        "request": "Request: \"Keep the hallway light on while I'm home after sunset.\""
+      },
+      "latency_s": 21.4,
+      "model_version": "gemini-3.6-flash",
+      "finish_reason": "STOP",
+      "raw_text": "{\n  \"unsupported\": \"\",\n  \"readings\": [\n    {\n      \"label\": \"turn on after sunset, off when leaving\",\n      \"rules\": [\n        {\n          \"when\": [\n            \"sunset\"\n          ],\n          \"if\": [\n            \"home\"\n          ],\n          \"device\": \"hallway_light\",\n          \"do\": \"on\"\n        },\n        {\n          \"when\": [\n            \"arrive\"\n          ],\n          \"if\": [\n            \"dark\"\n          ],\n          \"device\": \"hallway_light\",\n          \"do\": \"on\"\n        },\n        {\n          \"when\": [\n            \"leave\"\n          ],\n          \"if\": [],\n          \"device\": \"hallway_light\",\n          \"do\": \"off\"\n        }\n      ]\n    },\n    {\n      \"label\": \"turn on after sunset while home\",\n      \"rules\": [\n        {\n          \"when\": [\n            \"sunset\"\n          ],\n          \"if\": [\n            \"home\"\n          ],\n          \"device\": \"hallway_light\",\n          \"do\": \"on\"\n        },\n        {\n          \"when\": [\n            \"arrive\"\n          ],\n          \"if\": [\n            \"dark\"\n          ],\n          \"device\": \"hallway_light\",\n          \"do\": \"on\"\n        }\n      ]\n    }\n  ]\n}",
+      "check": {
+        "C1 shape": true,
+        "C2 vocabulary": true,
+        "C3 1-3 readings": true,
+        "C4 distinct": true
+      }
+    },
+    {
+      "request_id": "E",
+      "request": "When it gets dark, turn on the hallway light.",
+      "time": "2026-11-02T21:02:01+00:00",
+      "endpoint": "gemini-api",
+      "model": "gemini-3.5-flash",
+      "prompt_version": "v1",
+      "temperature": 0.4,
+      "context": {
+        "prompt_version": "v1",
+        "instruction": "TASK\nYou translate one sentence, written by a person who does not program, into candidate rules for a home automation. A simple simulator will run the rules, and the person will check them before anything is saved.\n\nReturn between one and three READINGS of the request. A reading is a set of rules. Give more than one reading only when the request can reasonably be understood to switch the light at different times; the readings must then behave differently in at least one situation. If the timing is clear, return exactly one reading.\n\nVOCABULARY (use these words and nothing else)\n- device: \"hallway_light\"\n- events (\"when\"): \"arrive\" = the person arrives home; \"leave\" = the person leaves home; \"sunset\" = it gets dark\n- conditions (\"if\"): \"home\" = the person is at home; \"dark\" = it is dark\n- actions (\"do\"): \"on\", \"off\"\nA rule fires when any one of its events happens and all of its conditions are true just after that event.\n\nCONSTRAINTS\n- Include only behaviour that the request states or clearly implies. Do not add rules the person did not ask for.\n- If the request needs anything outside the vocabulary (another device, a clock time, a delay such as \"two hours after\", or an event such as going to bed), return no readings and say in a few words what is missing in \"unsupported\". Otherwise set \"unsupported\" to an empty string.\n- Each \"label\" says, in at most eight plain words, how that reading understands the timing.\n\nEXAMPLE\nRequest: \"Turn on the hallway light when I arrive home.\"\nReply: {\"unsupported\": \"\", \"readings\": [{\"label\": \"on whenever I arrive home\", \"rules\": [{\"when\": [\"arrive\"], \"if\": [], \"device\": \"hallway_light\", \"do\": \"on\"}]}]}\n\nA GOOD REPLY\n- is JSON that matches the response schema;\n- uses only the vocabulary above;\n- gives one reading for a clear request, and two or three readings that behave differently for a vague one;\n- for a request outside the vocabulary, gives no readings and a non-empty \"unsupported\".\n",
+        "request": "Request: \"When it gets dark, turn on the hallway light.\""
+      },
+      "latency_s": 7.7,
+      "model_version": "gemini-3.6-flash",
+      "finish_reason": "STOP",
+      "raw_text": "{\"unsupported\":\"\",\"readings\":[{\"label\":\"turn on at sunset regardless of being home\",\"rules\":[{\"when\":[\"sunset\"],\"if\":[],\"device\":\"hallway_light\",\"do\":\"on\"}]},{\"label\":\"turn on at sunset only if home\",\"rules\":[{\"when\":[\"sunset\"],\"if\":[\"home\"],\"device\":\"hallway_light\",\"do\":\"on\"}]}]}",
+      "check": {
+        "C1 shape": true,
+        "C2 vocabulary": true,
+        "C3 1-3 readings": true,
+        "C4 distinct": true
+      }
+    },
+    {
+      "request_id": "F",
+      "request": "Lock the front door when I leave.",
+      "time": "2026-11-02T21:02:13+00:00",
+      "endpoint": "gemini-api",
+      "model": "gemini-3.5-flash",
+      "prompt_version": "v1",
+      "temperature": 0.4,
+      "context": {
+        "prompt_version": "v1",
+        "instruction": "TASK\nYou translate one sentence, written by a person who does not program, into candidate rules for a home automation. A simple simulator will run the rules, and the person will check them before anything is saved.\n\nReturn between one and three READINGS of the request. A reading is a set of rules. Give more than one reading only when the request can reasonably be understood to switch the light at different times; the readings must then behave differently in at least one situation. If the timing is clear, return exactly one reading.\n\nVOCABULARY (use these words and nothing else)\n- device: \"hallway_light\"\n- events (\"when\"): \"arrive\" = the person arrives home; \"leave\" = the person leaves home; \"sunset\" = it gets dark\n- conditions (\"if\"): \"home\" = the person is at home; \"dark\" = it is dark\n- actions (\"do\"): \"on\", \"off\"\nA rule fires when any one of its events happens and all of its conditions are true just after that event.\n\nCONSTRAINTS\n- Include only behaviour that the request states or clearly implies. Do not add rules the person did not ask for.\n- If the request needs anything outside the vocabulary (another device, a clock time, a delay such as \"two hours after\", or an event such as going to bed), return no readings and say in a few words what is missing in \"unsupported\". Otherwise set \"unsupported\" to an empty string.\n- Each \"label\" says, in at most eight plain words, how that reading understands the timing.\n\nEXAMPLE\nRequest: \"Turn on the hallway light when I arrive home.\"\nReply: {\"unsupported\": \"\", \"readings\": [{\"label\": \"on whenever I arrive home\", \"rules\": [{\"when\": [\"arrive\"], \"if\": [], \"device\": \"hallway_light\", \"do\": \"on\"}]}]}\n\nA GOOD REPLY\n- is JSON that matches the response schema;\n- uses only the vocabulary above;\n- gives one reading for a clear request, and two or three readings that behave differently for a vague one;\n- for a request outside the vocabulary, gives no readings and a non-empty \"unsupported\".\n",
+        "request": "Request: \"Lock the front door when I leave.\""
+      },
+      "latency_s": 3.6,
+      "model_version": "gemini-3.6-flash",
+      "finish_reason": "STOP",
+      "raw_text": "{\"unsupported\":\"front door lock\",\"readings\":[]}",
+      "check": {
+        "C1 shape": true,
+        "C5 declined": true
+      }
+    },
+    {
+      "request_id": "G",
+      "request": "Turn off the hallway light two hours after I go to bed.",
+      "time": "2026-11-02T21:02:21+00:00",
+      "endpoint": "gemini-api",
+      "model": "gemini-3.5-flash",
+      "prompt_version": "v1",
+      "temperature": 0.4,
+      "context": {
+        "prompt_version": "v1",
+        "instruction": "TASK\nYou translate one sentence, written by a person who does not program, into candidate rules for a home automation. A simple simulator will run the rules, and the person will check them before anything is saved.\n\nReturn between one and three READINGS of the request. A reading is a set of rules. Give more than one reading only when the request can reasonably be understood to switch the light at different times; the readings must then behave differently in at least one situation. If the timing is clear, return exactly one reading.\n\nVOCABULARY (use these words and nothing else)\n- device: \"hallway_light\"\n- events (\"when\"): \"arrive\" = the person arrives home; \"leave\" = the person leaves home; \"sunset\" = it gets dark\n- conditions (\"if\"): \"home\" = the person is at home; \"dark\" = it is dark\n- actions (\"do\"): \"on\", \"off\"\nA rule fires when any one of its events happens and all of its conditions are true just after that event.\n\nCONSTRAINTS\n- Include only behaviour that the request states or clearly implies. Do not add rules the person did not ask for.\n- If the request needs anything outside the vocabulary (another device, a clock time, a delay such as \"two hours after\", or an event such as going to bed), return no readings and say in a few words what is missing in \"unsupported\". Otherwise set \"unsupported\" to an empty string.\n- Each \"label\" says, in at most eight plain words, how that reading understands the timing.\n\nEXAMPLE\nRequest: \"Turn on the hallway light when I arrive home.\"\nReply: {\"unsupported\": \"\", \"readings\": [{\"label\": \"on whenever I arrive home\", \"rules\": [{\"when\": [\"arrive\"], \"if\": [], \"device\": \"hallway_light\", \"do\": \"on\"}]}]}\n\nA GOOD REPLY\n- is JSON that matches the response schema;\n- uses only the vocabulary above;\n- gives one reading for a clear request, and two or three readings that behave differently for a vague one;\n- for a request outside the vocabulary, gives no readings and a non-empty \"unsupported\".\n",
+        "request": "Request: \"Turn off the hallway light two hours after I go to bed.\""
+      },
+      "latency_s": 4.8,
+      "model_version": "gemini-3.6-flash",
+      "finish_reason": "STOP",
+      "raw_text": "{\"unsupported\":\"Delays and going to bed events are unsupported\",\"readings\":[]}",
+      "check": {
+        "C1 shape": true,
+        "C5 declined": true
+      }
+    },
+    {
+      "request_id": "A",
+      "request": "When I arrive home after sunset, turn on the hallway light, and turn it off when I leave.",
+      "time": "2026-11-02T21:03:05+00:00",
+      "endpoint": "gemini-api",
+      "model": "gemini-3.5-flash",
+      "prompt_version": "v1",
+      "temperature": 0.4,
+      "context": {
+        "prompt_version": "v1",
+        "instruction": "TASK\nYou translate one sentence, written by a person who does not program, into candidate rules for a home automation. A simple simulator will run the rules, and the person will check them before anything is saved.\n\nReturn between one and three READINGS of the request. A reading is a set of rules. Give more than one reading only when the request can reasonably be understood to switch the light at different times; the readings must then behave differently in at least one situation. If the timing is clear, return exactly one reading.\n\nVOCABULARY (use these words and nothing else)\n- device: \"hallway_light\"\n- events (\"when\"): \"arrive\" = the person arrives home; \"leave\" = the person leaves home; \"sunset\" = it gets dark\n- conditions (\"if\"): \"home\" = the person is at home; \"dark\" = it is dark\n- actions (\"do\"): \"on\", \"off\"\nA rule fires when any one of its events happens and all of its conditions are true just after that event.\n\nCONSTRAINTS\n- Include only behaviour that the request states or clearly implies. Do not add rules the person did not ask for.\n- If the request needs anything outside the vocabulary (another device, a clock time, a delay such as \"two hours after\", or an event such as going to bed), return no readings and say in a few words what is missing in \"unsupported\". Otherwise set \"unsupported\" to an empty string.\n- Each \"label\" says, in at most eight plain words, how that reading understands the timing.\n\nEXAMPLE\nRequest: \"Turn on the hallway light when I arrive home.\"\nReply: {\"unsupported\": \"\", \"readings\": [{\"label\": \"on whenever I arrive home\", \"rules\": [{\"when\": [\"arrive\"], \"if\": [], \"device\": \"hallway_light\", \"do\": \"on\"}]}]}\n\nA GOOD REPLY\n- is JSON that matches the response schema;\n- uses only the vocabulary above;\n- gives one reading for a clear request, and two or three readings that behave differently for a vague one;\n- for a request outside the vocabulary, gives no readings and a non-empty \"unsupported\".\n",
+        "request": "Request: \"When I arrive home after sunset, turn on the hallway light, and turn it off when I leave.\""
+      },
+      "latency_s": 5.8,
+      "model_version": "gemini-3.6-flash",
+      "finish_reason": "STOP",
+      "raw_text": "{\"unsupported\":\"\",\"readings\":[{\"label\":\"turn on when arriving in dark, off leaving\",\"rules\":[{\"when\":[\"arrive\"],\"if\":[\"dark\"],\"device\":\"hallway_light\",\"do\":\"on\"},{\"when\":[\"leave\"],\"if\":[],\"device\":\"hallway_light\",\"do\":\"off\"}]}]}",
+      "check": {
+        "C1 shape": true,
+        "C2 vocabulary": true,
+        "C3 1-3 readings": true,
+        "C4 distinct": true
+      }
+    },
+    {
+      "request_id": "B",
+      "request": "Turn on the hallway light when I'm home after dark.",
+      "time": "2026-11-02T21:03:23+00:00",
+      "endpoint": "gemini-api",
+      "model": "gemini-3.5-flash",
+      "prompt_version": "v1",
+      "temperature": 0.4,
+      "context": {
+        "prompt_version": "v1",
+        "instruction": "TASK\nYou translate one sentence, written by a person who does not program, into candidate rules for a home automation. A simple simulator will run the rules, and the person will check them before anything is saved.\n\nReturn between one and three READINGS of the request. A reading is a set of rules. Give more than one reading only when the request can reasonably be understood to switch the light at different times; the readings must then behave differently in at least one situation. If the timing is clear, return exactly one reading.\n\nVOCABULARY (use these words and nothing else)\n- device: \"hallway_light\"\n- events (\"when\"): \"arrive\" = the person arrives home; \"leave\" = the person leaves home; \"sunset\" = it gets dark\n- conditions (\"if\"): \"home\" = the person is at home; \"dark\" = it is dark\n- actions (\"do\"): \"on\", \"off\"\nA rule fires when any one of its events happens and all of its conditions are true just after that event.\n\nCONSTRAINTS\n- Include only behaviour that the request states or clearly implies. Do not add rules the person did not ask for.\n- If the request needs anything outside the vocabulary (another device, a clock time, a delay such as \"two hours after\", or an event such as going to bed), return no readings and say in a few words what is missing in \"unsupported\". Otherwise set \"unsupported\" to an empty string.\n- Each \"label\" says, in at most eight plain words, how that reading understands the timing.\n\nEXAMPLE\nRequest: \"Turn on the hallway light when I arrive home.\"\nReply: {\"unsupported\": \"\", \"readings\": [{\"label\": \"on whenever I arrive home\", \"rules\": [{\"when\": [\"arrive\"], \"if\": [], \"device\": \"hallway_light\", \"do\": \"on\"}]}]}\n\nA GOOD REPLY\n- is JSON that matches the response schema;\n- uses only the vocabulary above;\n- gives one reading for a clear request, and two or three readings that behave differently for a vague one;\n- for a request outside the vocabulary, gives no readings and a non-empty \"unsupported\".\n",
+        "request": "Request: \"Turn on the hallway light when I'm home after dark.\""
+      },
+      "latency_s": 6.2,
+      "model_version": "gemini-3.6-flash",
+      "finish_reason": "STOP",
+      "raw_text": "{\"unsupported\":\"\",\"readings\":[{\"label\":\"if home at sunset or arriving when dark\",\"rules\":[{\"when\":[\"sunset\"],\"if\":[\"home\"],\"device\":\"hallway_light\",\"do\":\"on\"},{\"when\":[\"arrive\"],\"if\":[\"dark\"],\"device\":\"hallway_light\",\"do\":\"on\"}]},{\"label\":\"when arriving home if it is dark\",\"rules\":[{\"when\":[\"arrive\"],\"if\":[\"dark\"],\"device\":\"hallway_light\",\"do\":\"on\"}]},{\"label\":\"at sunset if currently home\",\"rules\":[{\"when\":[\"sunset\"],\"if\":[\"home\"],\"device\":\"hallway_light\",\"do\":\"on\"}]}]}",
+      "check": {
+        "C1 shape": true,
+        "C2 vocabulary": true,
+        "C3 1-3 readings": true,
+        "C4 distinct": true
+      }
+    },
+    {
+      "request_id": "C",
+      "request": "Turn on the hallway light as soon as I get home after dark.",
+      "time": "2026-11-02T21:03:41+00:00",
+      "endpoint": "gemini-api",
+      "model": "gemini-3.5-flash",
+      "prompt_version": "v1",
+      "temperature": 0.4,
+      "context": {
+        "prompt_version": "v1",
+        "instruction": "TASK\nYou translate one sentence, written by a person who does not program, into candidate rules for a home automation. A simple simulator will run the rules, and the person will check them before anything is saved.\n\nReturn between one and three READINGS of the request. A reading is a set of rules. Give more than one reading only when the request can reasonably be understood to switch the light at different times; the readings must then behave differently in at least one situation. If the timing is clear, return exactly one reading.\n\nVOCABULARY (use these words and nothing else)\n- device: \"hallway_light\"\n- events (\"when\"): \"arrive\" = the person arrives home; \"leave\" = the person leaves home; \"sunset\" = it gets dark\n- conditions (\"if\"): \"home\" = the person is at home; \"dark\" = it is dark\n- actions (\"do\"): \"on\", \"off\"\nA rule fires when any one of its events happens and all of its conditions are true just after that event.\n\nCONSTRAINTS\n- Include only behaviour that the request states or clearly implies. Do not add rules the person did not ask for.\n- If the request needs anything outside the vocabulary (another device, a clock time, a delay such as \"two hours after\", or an event such as going to bed), return no readings and say in a few words what is missing in \"unsupported\". Otherwise set \"unsupported\" to an empty string.\n- Each \"label\" says, in at most eight plain words, how that reading understands the timing.\n\nEXAMPLE\nRequest: \"Turn on the hallway light when I arrive home.\"\nReply: {\"unsupported\": \"\", \"readings\": [{\"label\": \"on whenever I arrive home\", \"rules\": [{\"when\": [\"arrive\"], \"if\": [], \"device\": \"hallway_light\", \"do\": \"on\"}]}]}\n\nA GOOD REPLY\n- is JSON that matches the response schema;\n- uses only the vocabulary above;\n- gives one reading for a clear request, and two or three readings that behave differently for a vague one;\n- for a request outside the vocabulary, gives no readings and a non-empty \"unsupported\".\n",
+        "request": "Request: \"Turn on the hallway light as soon as I get home after dark.\""
+      },
+      "error": "HTTP 503: This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."
+    },
+    {
+      "request_id": "C",
+      "request": "Turn on the hallway light as soon as I get home after dark.",
+      "time": "2026-11-02T21:04:26+00:00",
+      "endpoint": "gemini-api",
+      "model": "gemini-3.5-flash",
+      "prompt_version": "v1",
+      "temperature": 0.4,
+      "context": {
+        "prompt_version": "v1",
+        "instruction": "TASK\nYou translate one sentence, written by a person who does not program, into candidate rules for a home automation. A simple simulator will run the rules, and the person will check them before anything is saved.\n\nReturn between one and three READINGS of the request. A reading is a set of rules. Give more than one reading only when the request can reasonably be understood to switch the light at different times; the readings must then behave differently in at least one situation. If the timing is clear, return exactly one reading.\n\nVOCABULARY (use these words and nothing else)\n- device: \"hallway_light\"\n- events (\"when\"): \"arrive\" = the person arrives home; \"leave\" = the person leaves home; \"sunset\" = it gets dark\n- conditions (\"if\"): \"home\" = the person is at home; \"dark\" = it is dark\n- actions (\"do\"): \"on\", \"off\"\nA rule fires when any one of its events happens and all of its conditions are true just after that event.\n\nCONSTRAINTS\n- Include only behaviour that the request states or clearly implies. Do not add rules the person did not ask for.\n- If the request needs anything outside the vocabulary (another device, a clock time, a delay such as \"two hours after\", or an event such as going to bed), return no readings and say in a few words what is missing in \"unsupported\". Otherwise set \"unsupported\" to an empty string.\n- Each \"label\" says, in at most eight plain words, how that reading understands the timing.\n\nEXAMPLE\nRequest: \"Turn on the hallway light when I arrive home.\"\nReply: {\"unsupported\": \"\", \"readings\": [{\"label\": \"on whenever I arrive home\", \"rules\": [{\"when\": [\"arrive\"], \"if\": [], \"device\": \"hallway_light\", \"do\": \"on\"}]}]}\n\nA GOOD REPLY\n- is JSON that matches the response schema;\n- uses only the vocabulary above;\n- gives one reading for a clear request, and two or three readings that behave differently for a vague one;\n- for a request outside the vocabulary, gives no readings and a non-empty \"unsupported\".\n",
+        "request": "Request: \"Turn on the hallway light as soon as I get home after dark.\""
+      },
+      "latency_s": 6.3,
+      "model_version": "gemini-3.6-flash",
+      "finish_reason": "STOP",
+      "raw_text": "{\n  \"unsupported\": \"\",\n  \"readings\": [\n    {\n      \"label\": \"When arriving home if it is dark\",\n      \"rules\": [\n        {\n          \"when\": [\n            \"arrive\"\n          ],\n          \"if\": [\n            \"dark\"\n          ],\n          \"device\": \"hallway_light\",\n          \"do\": \"on\"\n        }\n      ]\n    }\n  ]\n}",
+      "check": {
+        "C1 shape": true,
+        "C2 vocabulary": true,
+        "C3 1-3 readings": true,
+        "C4 distinct": true
+      }
+    }
+  ]
+}

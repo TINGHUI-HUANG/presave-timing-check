@@ -1,0 +1,6 @@
+{
+  "endpoint": "gemini-api",
+  "model": "gemini-3.5-flash",
+  "model_version": "gemini-3.6-flash",
+  "checked": "2026-11-02T21:00:41+00:00"
+}

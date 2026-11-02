@@ -66,7 +66,7 @@ def check(key):
         for model in models:
             started = time.time()
             try:
-                text, meta = readings.call(context, endpoint, model, key, timeout=30)
+                text, meta = readings.call(context, endpoint, model, key, timeout=60)
             except readings.GeneratorError as error:
                 print(f"  {endpoint:15} {model:24} failed: {error}")
                 continue

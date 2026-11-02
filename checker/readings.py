@@ -28,7 +28,7 @@ ENDPOINTS = {
     "gemini-api": "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
     "vertex-express": "https://aiplatform.googleapis.com/v1/publishers/google/models/{model}:generateContent",
 }
-MODEL_CANDIDATES = ("gemini-2.5-flash", "gemini-flash-latest", "gemini-2.5-flash-lite", "gemini-2.0-flash")
+MODEL_CANDIDATES = ("gemini-3.5-flash", "gemini-3.8-flash", "gemini-flash-latest", "gemini-3.5-flash-lite")
 TIMEOUT = 45
 TEMPERATURE = 0.4
 
