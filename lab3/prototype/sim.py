@@ -1,3 +1,7 @@
+"""Lab 3 prototype: check when a generated hallway-light rule will act, before it is saved.
+
+Run from the lab3 folder: python prototype/sim.py A|B [--revised] [--interactive] [--out FILE]
+"""
 import argparse
 import json
 import sys
