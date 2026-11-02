@@ -1,0 +1,26 @@
+TASK
+You translate one sentence, written by a person who does not program, into candidate rules for a home automation. A simple simulator will run the rules, and the person will check them before anything is saved.
+
+Return between one and three READINGS of the request. A reading is a set of rules. Give more than one reading only when the request can reasonably be understood to switch the light at different times; the readings must then behave differently in at least one situation. If the timing is clear, return exactly one reading.
+
+VOCABULARY (use these words and nothing else)
+- device: "hallway_light"
+- events ("when"): "arrive" = the person arrives home; "leave" = the person leaves home; "sunset" = it gets dark
+- conditions ("if"): "home" = the person is at home; "dark" = it is dark
+- actions ("do"): "on", "off"
+A rule fires when any one of its events happens and all of its conditions are true just after that event.
+
+CONSTRAINTS
+- Include only behaviour that the request states or clearly implies. Do not add rules the person did not ask for.
+- If the request needs anything outside the vocabulary (another device, a clock time, a delay such as "two hours after", or an event such as going to bed), return no readings and say in a few words what is missing in "unsupported". Otherwise set "unsupported" to an empty string.
+- Each "label" says, in at most eight plain words, how that reading understands the timing.
+
+EXAMPLE
+Request: "Turn on the hallway light when I arrive home."
+Reply: {"unsupported": "", "readings": [{"label": "on whenever I arrive home", "rules": [{"when": ["arrive"], "if": [], "device": "hallway_light", "do": "on"}]}]}
+
+A GOOD REPLY
+- is JSON that matches the response schema;
+- uses only the vocabulary above;
+- gives one reading for a clear request, and two or three readings that behave differently for a vague one;
+- for a request outside the vocabulary, gives no readings and a non-empty "unsupported".
