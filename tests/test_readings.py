@@ -54,6 +54,22 @@ class Readings(unittest.TestCase):
         self.assertEqual(generated.error, "no_source")
         self.assertEqual(generated.readings, [])
 
+    def test_auto_without_key_falls_back_to_labelled_fixed_readings(self):
+        with mock.patch.object(readings, "api_key", return_value=""), \
+             mock.patch.object(readings, "find_recording", return_value=None):
+            generated = readings.generate("Turn on the hallway light when I'm home after dark.")
+        self.assertEqual(generated.source["kind"], "fixed")
+
+    def test_failed_live_call_is_reported_not_replaced(self):
+        def failing_call(*args, **kwargs):
+            raise readings.GeneratorError("HTTP 503: unavailable")
+
+        with mock.patch.object(readings, "api_key", return_value=FAKE_KEY), \
+             mock.patch.object(readings, "find_recording", return_value=None), \
+             mock.patch.object(readings, "call", side_effect=failing_call):
+            generated = readings.generate("Turn on the hallway light when I'm home after dark.")
+        self.assertEqual((generated.error, generated.readings), ("model_failed", []))
+
     def test_key_goes_to_the_call_but_never_into_the_log(self):
         seen = {}
 

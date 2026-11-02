@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Automation builder: pre-save check</title>
+<style>
+  :root {
+    --bg: #f4f5f7; --card: #ffffff; --ink: #1f2328; --muted: #5b6470; --line: #d9dee4;
+    --accent: #1f5fbf; --accent-soft: #e9f1fc; --warn: #8a5300; --warn-soft: #fff3dc;
+    --ok: #1a7f37; --ok-soft: #e7f5ea; --planned: #6b7280;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 16px/1.45 "Segoe UI", system-ui, -apple-system, Arial, sans-serif; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+  header { background: #fff; border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; padding-top: 14px; padding-bottom: 12px; }
+  h1 { font-size: 20px; margin: 0; }
+  .tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; }
+  main.wrap { padding: 18px 16px 48px; }
+  .scope { font-size: 14px; color: var(--muted); background: #fff; border: 1px solid var(--line);
+           border-left: 4px solid var(--accent); border-radius: 8px; padding: 9px 12px; margin-bottom: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px;
+          margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .card h2 { font-size: 14px; margin: 0 0 8px; color: var(--muted); font-weight: 600; }
+  textarea { width: 100%; min-height: 64px; font: inherit; padding: 10px; border: 1px solid var(--line);
+             border-radius: 8px; resize: vertical; }
+  .examples { font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .chip { font: inherit; font-size: 13px; border: 1px solid var(--line); background: #fafbfc; color: var(--ink);
+          border-radius: 999px; padding: 3px 11px; cursor: pointer; text-align: left; }
+  .chip:hover { border-color: var(--accent); }
+  button { font: inherit; border-radius: 8px; padding: 7px 16px; cursor: pointer; border: 1px solid var(--accent);
+           background: #fff; color: var(--accent); }
+  button.primary { background: var(--accent); color: #fff; }
+  button:disabled { opacity: .45; cursor: default; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .status { font-size: 14px; color: var(--muted); min-height: 20px; margin-top: 10px; }
+  .quote { font-size: 17px; }
+  .badge { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .situation { background: #f3f5f8; border-radius: 8px; padding: 10px 12px; margin: 4px 0 8px; }
+  .question { font-weight: 600; font-size: 17px; }
+  .why { font-size: 13px; color: var(--muted); margin-top: 10px; }
+  .rule { background: var(--accent-soft); border-radius: 8px; padding: 9px 12px; margin: 6px 0; }
+  .rule div + div { margin-top: 4px; }
+  .never { background: var(--warn-soft); color: var(--warn); border-radius: 8px; padding: 7px 12px; margin: 6px 0;
+           font-size: 15px; font-weight: 600; }
+  .done { padding: 10px 18px; font-size: 14px; color: var(--muted); }
+  .done b { color: var(--ink); }
+  .done .note { margin-top: 3px; }
+  .small { font-size: 13px; color: var(--muted); }
+  ul.confirmed { margin: 4px 0 0; padding-left: 20px; font-size: 14px; }
+  .saved { border-color: #b8dec3; background: var(--ok-soft); }
+  .saved h2 { color: var(--ok); font-size: 16px; }
+  .planned { font-size: 12px; color: var(--planned); border: 1px dashed var(--planned); border-radius: 6px;
+             padding: 0 6px; white-space: nowrap; }
+  .options { display: grid; gap: 10px; margin-top: 8px; }
+  .option { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  details.more { margin-top: 10px; font-size: 14px; }
+  details.inspect { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px;
+                    margin-top: 24px; font-size: 14px; }
+  details.inspect h3 { font-size: 14px; margin: 14px 0 6px; }
+  table { border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+  td, th { border: 1px solid var(--line); padding: 3px 8px; text-align: left; vertical-align: top; }
+  th { background: #f6f8fa; }
+  pre { white-space: pre-wrap; word-break: break-word; font-size: 12px; background: #f6f8fa; padding: 8px;
+        border-radius: 6px; margin: 4px 0; }
+  .spin { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--line); border-top-color: var(--accent);
+          border-radius: 50%; animation: spin .8s linear infinite; vertical-align: -2px; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sr { position: absolute; left: -9999px; }
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Automation builder</h1><span class="tag">pre-save timing check · research prototype</span></div></header>
+<main class="wrap">
+  <div class="scope" id="scope" data-test="scope"></div>
+  <section class="card" id="compose" data-test="compose">
+    <h2>New automation</h2>
+    <label for="req" class="sr">Describe the automation in one sentence</label>
+    <textarea id="req" placeholder="Describe the automation in one sentence"></textarea>
+    <div class="examples">Examples:</div>
+    <div class="chips" id="chips"></div>
+    <div class="row"><button class="primary" id="create" data-choice="create">Create rule</button></div>
+    <div class="status" id="status" aria-live="polite"></div>
+  </section>
+  <div id="thread"></div>
+  <details class="inspect" id="inspect" data-test="inspect">
+    <summary>How this was checked (for reviewers)</summary>
+    <div id="inspect-body"><p class="small">No request yet.</p></div>
+  </details>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+let view = null, busy = false, timer = null;
+
+async function api(path, body) {
+  const response = await fetch(path, {method: body ? "POST" : "GET", headers: {"Content-Type": "application/json"},
+                                      body: body ? JSON.stringify(body) : undefined});
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || response.statusText);
+  return data;
+}
+
+function status(html) { $("#status").innerHTML = html; }
+
+async function init() {
+  const meta = await api("/api/meta");
+  $("#scope").textContent = meta.scope;
+  for (const ex of meta.examples) {
+    const chip = document.createElement("button");
+    chip.className = "chip"; chip.textContent = ex.text; chip.title = ex.about; chip.dataset.example = ex.id;
+    chip.onclick = () => { $("#req").value = ex.text; $("#req").focus(); };
+    $("#chips").append(chip);
+  }
+  $("#create").onclick = start;
+  $("#req").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); start(); } });
+}
+
+async function start() {
+  const text = $("#req").value.trim();
+  if (!text || busy) return;
+  busy = true; $("#create").disabled = true; $("#thread").innerHTML = "";
+  const began = Date.now();
+  status('<span class="spin"></span>Reading your request…');
+  timer = setInterval(() => {
+    const s = Math.round((Date.now() - began) / 1000);
+    if (s >= 1) status(`<span class="spin"></span>Reading your request… ${s} s`);
+  }, 500);
+  try {
+    view = await api("/api/start", {request: text});
+    status("");
+    render();
+  } catch (error) {
+    status(esc(error.message));
+  } finally {
+    clearInterval(timer); busy = false; $("#create").disabled = false;
+  }
+}
+
+async function act(path, body, button) {
+  if (busy) return;
+  busy = true;
+  button.closest(".card").querySelectorAll("button").forEach((b) => (b.disabled = true));
+  try {
+    view = await api(path, {session: view.session, ...body});
+    render();
+  } catch (error) {
+    status(esc(error.message));
+  } finally { busy = false; }
+}
+
+function sourceText(src) {
+  if (!src) return "";
+  const day = (t) => (t ? new Date(t).toLocaleDateString("en-GB", {day: "numeric", month: "short", year: "numeric"}) : "");
+  if (src.kind === "recorded") return `Rules drafted by ${esc(src.model)} (recorded ${day(src.time)}); outcomes worked out by the simulator.`;
+  if (src.kind === "live") return `Rules drafted just now by ${esc(src.model)} in ${src.latency_s} s; outcomes worked out by the simulator.`;
+  if (src.kind === "fixed") return "Rules hand-written in Lab 3 (simulated model output); outcomes worked out by the simulator.";
+  return "";
+}
+
+function card(kind, html, extra = "") {
+  const el = document.createElement("section");
+  el.className = `card ${extra}`; el.dataset.test = kind; el.innerHTML = html;
+  return el;
+}
+
+function buttons(options, primary) {
+  return '<div class="row">' + options.map(([value, label], i) =>
+    `<button data-choice="${esc(value)}" class="${i === 0 && primary ? "primary" : ""}">${esc(label)}</button>`).join("") + "</div>";
+}
+
+function ruleBox(rules) { return '<div class="rule">' + rules.map((r) => `<div>${esc(r)}</div>`).join("") + "</div>"; }
+function neverBox(never) { return (never || []).map((n) => `<div class="never">${esc(n)}</div>`).join(""); }
+
+function render() {
+  const thread = $("#thread");
+  thread.innerHTML = "";
+  thread.append(card("request", `<h2>Your request</h2><div class="quote">“${esc(view.request)}”</div>
+    <div class="badge">${sourceText(view.source)}</div>`));
+  for (const h of view.history) {
+    thread.append(card(`done-${h.number}`, `Q${h.number} · ${esc(h.situation)} ${esc(h.question)} → <b>${esc(h.answer)}</b>` +
+      (h.note ? `<div class="note">${esc(h.note)}</div>` : ""), "done"));
+  }
+  const c = view.card;
+  let el;
+  if (c.kind === "question") {
+    el = card("question", `<h2>Question ${c.number} of up to ${c.budget}</h2>
+      <div class="situation">${esc(c.situation)}</div><div class="question">${esc(c.question)}</div>
+      ${buttons(c.options, false)}<div class="why">Why I'm asking: ${esc(c.why)}</div>`);
+    wire(el, (v) => ["/api/answer", {answer: v}]);
+  } else if (c.kind === "repair") {
+    el = card("repair", `<h2>Add a missing rule?</h2><div>None of the rules I built does what you just said. I can add this rule:</div>
+      ${ruleBox([c.rule])}${buttons(c.options, true)}<div class="why">Nothing is added unless you choose Add this rule.</div>`);
+    wire(el, (v) => (v === "edit" ? null : ["/api/repair", {choice: v}]));
+  } else if (c.kind === "confirm") {
+    const rows = c.situations.map((s) => `<tr><td>${esc(s.label)}</td><td>light ${esc(s.outcome)}</td><td>${esc(s.checked)}</td></tr>`).join("");
+    el = card("confirm", `<h2>Here is the rule I will save</h2>${ruleBox(c.rules)}${neverBox(c.never)}
+      ${c.confirmed.length ? `<div class="small">What you told me:</div><ul class="confirmed">${c.confirmed.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+      <details class="more"><summary>What it does in every situation I can check</summary>
+      <table><tr><th>Situation</th><th>Result</th><th>Checked with you?</th></tr>${rows}</table></details>
+      ${buttons(c.options, true)}
+      <div class="why">Edit puts your request back in the box above. <span class="planned">rule editor: planned</span></div>`);
+    wire(el, (v) => (v === "edit" ? null : ["/api/decide", {choice: v}]));
+  } else if (c.kind === "choose") {
+    const diff = c.differences.map((d) => `<div class="small">They differ here: ${esc(d.situation)} ` +
+      d.outcomes.map((o, i) => `Rule ${i + 1}: light ${esc(o)}`).join("; ") + "</div>").join("");
+    el = card("choose", `<h2>These rules still act differently</h2><div>Choose the one you mean, or edit your request.</div>${diff}
+      <div class="options">${c.readings.map((r, i) => `<div class="option"><b>Rule ${i + 1}</b>${ruleBox(r.rules)}${neverBox(r.never)}</div>`).join("")}</div>
+      ${buttons(c.options, false)}`);
+    wire(el, (v) => (v === "edit" ? null : ["/api/decide", {choice: v}]));
+  } else if (c.kind === "none") {
+    el = card("none", `<h2>Nothing to save yet</h2><div>None of the rules I built matches your answers, so I have not created a rule.
+      You can rephrase your request.</div>${buttons(c.options, true)}`);
+    wire(el, () => null);
+  } else if (c.kind === "declined") {
+    el = card("declined", `<h2>I can't check this request</h2>
+      <div>Your request needs something this prototype cannot check (${c.needs.map(esc).join("; ")}), so I have not created a rule.</div>
+      <div class="why">I can check rules for the hallway light that use arriving home, leaving home and sunset.</div>${buttons(c.options, true)}`);
+    wire(el, () => null);
+  } else if (c.kind === "error") {
+    el = card("error", `<h2>No rule created</h2><div>${esc(c.text)}</div><div class="why">Detail: ${esc(c.detail)}</div>${buttons(c.options, true)}`);
+    wire(el, (v) => (v === "retry" ? "retry" : null));
+  } else if (c.kind === "saved") {
+    el = card("saved", `<h2>✓ Saved</h2>${ruleBox(c.rules)}${neverBox(c.never)}
+      <div class="why">Saved in this prototype only. <span class="planned">sending it to Google Home or Home Assistant: planned</span></div>`, "saved");
+  } else {
+    editRequest();
+    return;
+  }
+  thread.append(el);
+  renderInspect(view.inspect);
+  const first = el.querySelector("button");
+  el.scrollIntoView({block: "nearest"});
+  if (first) first.focus({preventScroll: true});
+}
+
+function wire(el, route) {
+  el.querySelectorAll("button[data-choice]").forEach((b) => {
+    b.onclick = () => {
+      const target = route(b.dataset.choice);
+      if (target === "retry") return start();
+      if (target === null) return b.dataset.choice === "edit" && view.card.kind !== "question" ? sendEdit(b) : editRequest();
+      act(target[0], target[1], b);
+    };
+  });
+}
+
+async function sendEdit(button) {
+  if (["confirm", "choose", "none", "declined", "error"].includes(view.card.kind)) {
+    try { await api("/api/decide", {session: view.session, choice: "edit"}); } catch (e) { /* the request text is kept anyway */ }
+  } else if (view.card.kind === "repair") {
+    try { await api("/api/repair", {session: view.session, choice: "edit"}); } catch (e) { /* kept anyway */ }
+  }
+  editRequest();
+}
+
+function editRequest() {
+  $("#req").value = view.request;
+  $("#thread").innerHTML = "";
+  status("Edit your request, then choose Create rule.");
+  $("#req").focus();
+  $("#req").scrollIntoView({block: "nearest"});
+}
+
+function renderInspect(i) {
+  const src = i.source || {};
+  const ids = i.readings.map((r) => r.id);
+  const table = i.readings.length ? `<table><tr><th>Scenario</th>${ids.map((x) => `<th>${esc(x)}</th>`).join("")}</tr>` +
+    i.table.map((row) => `<tr><td>${esc(row.id)} ${esc(row.label)}</td>${ids.map((x) => `<td>${esc(row.outcomes[x])}</td>`).join("")}</tr>`).join("") + "</table>" : "<p class='small'>No readings.</p>";
+  const steps = i.steps.length ? "<table><tr><th>#</th><th>Scenario</th><th>Why chosen</th><th>Outcomes</th><th>Answer</th><th>Kept</th><th>Dropped / changed</th></tr>" +
+    i.steps.map((s, n) => `<tr><td>${n + 1}</td><td>${esc(s.scenario)}</td><td>${esc(s.reason)}</td>
+      <td>${Object.entries(s.outcomes).map(([k, v]) => `${esc(k)}: ${esc(v)}`).join("<br>")}</td><td>${esc(s.answer)}</td>
+      <td>${esc((s.kept || []).join(", "))}</td><td>${esc((s.dropped || []).join(", "))}${s.added ? " added a rule" : ""}${s.declined ? " repair declined" : ""}</td></tr>`).join("") + "</table>"
+    : "<p class='small'>No questions asked.</p>";
+  $("#inspect-body").innerHTML = `
+    <h3>Where the readings came from</h3><pre>${esc(JSON.stringify(src, null, 2))}</pre>
+    <h3>What was sent to the model</h3>
+    ${i.sent && i.sent.request ? `<pre>${esc(i.sent.request)}</pre><details><summary>Instruction (prompt ${esc(i.sent.prompt_version)})</summary><pre>${esc(i.sent.instruction)}</pre></details>` : "<p class='small'>Nothing (no model call for this source).</p>"}
+    <h3>${src.kind === "fixed" ? "The hand-written readings (Lab 3)" : "The model's reply"}</h3><pre>${esc(i.raw_reply || "(none)")}</pre>
+    <h3>Readings after the checks</h3>${i.readings.map((r) => `<div><b>${esc(r.id)}</b> (${esc(r.label)}): ${esc(r.text)}</div>`).join("") || "<p class='small'>None.</p>"}
+    ${i.merged.length ? `<div class="small">Merged as identical in every scenario: ${esc(i.merged.map((m) => m.join(" = ")).join("; "))}</div>` : ""}
+    ${i.unsupported.length ? `<div class="small">Outside the envelope: ${esc(i.unsupported.join("; "))}</div>` : ""}
+    ${i.problems.length ? `<div class="small">Problems: ${esc(i.problems.join("; "))}</div>` : ""}
+    <h3>Simulated outcome of each reading in each scenario</h3>${table}
+    <h3>Questions (strategy ${esc(i.strategy)}, at most ${i.budget})</h3>${steps}
+    <h3>Initiative rule</h3><p>${esc(i.initiative)}</p>`;
+}
+
+init();
+</script>
+</body>
+</html>

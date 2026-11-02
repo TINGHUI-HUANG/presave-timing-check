@@ -208,8 +208,9 @@ def find_fixed(request):
 
 
 def generate(request, mode="auto"):
-    """mode: "auto" (a recording if there is one, else a live call if a key is set),
-    "recorded", "live" or "fixed" (Lab 3's hand-written readings, labelled simulated)."""
+    """mode: "auto" (a recording if there is one, else a live call if a key is set, else Lab 3's
+    hand-written readings if the request has them), "recorded", "live" or "fixed" (hand-written,
+    labelled simulated). A failed live call is reported, never replaced by another source."""
     if mode == "fixed":
         reply = find_fixed(request)
         source = {"kind": "fixed", "note": "hand-written in Lab 3 (simulated model output)"}
@@ -227,6 +228,8 @@ def generate(request, mode="auto"):
     context = build_context(request)
     key = api_key()
     if not key:
+        if mode == "auto" and find_fixed(request) is not None:
+            return generate(request, mode="fixed")   # Lab 3's hand-written readings, labelled simulated
         return Generated(request, {"kind": "none"}, context, error="no_source",
                          error_detail="no recording of this request and no Gemini key is set")
     endpoint, model = live_settings()
