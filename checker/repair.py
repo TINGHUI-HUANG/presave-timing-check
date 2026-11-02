@@ -4,7 +4,7 @@ Each probe scenario in the library carries a repair template for the outcome the
 there (for S4: "When you leave home: turn off the hallway light."). The rule is only proposed;
 the person chooses Add, Don't add or Edit.
 """
-from .simulator import simulate
+from .simulator import conflicts, simulate
 
 
 def with_rule(reading, rule):
@@ -19,6 +19,6 @@ def propose(remaining, scenario, wanted):
     if not template or not remaining:
         return None
     repaired = [with_rule(r, template) for r in remaining]
-    if all(simulate(r, scenario) == wanted for r in repaired):
+    if all(not conflicts(r) and simulate(r, scenario) == wanted for r in repaired):
         return dict(template), repaired
     return None

@@ -3,6 +3,8 @@
 Outcomes shown to the person come from here, not from the model's own description of its
 rule: the simulated outcome is observed, the model's summary would only be a claim (Lecture 12).
 """
+from itertools import product
+
 from .schema import EFFECT
 
 
@@ -24,16 +26,34 @@ def table(readings, scenarios):
     return {s["id"]: {r["id"]: simulate(r, s) for r in readings} for s in scenarios}
 
 
-def distinct(readings, scenarios):
-    """Merge readings that behave identically in every library scenario.
+def state_cases():
+    """Every possible state and supported single event (events update their state first)."""
+    for home, dark, light in product((False, True), (False, True), ("off", "on")):
+        for event in EFFECT:
+            yield {"start": {"home": home, "dark": dark, "light": light},
+                   "events": [["", event]]}
 
-    The questions can only tell readings apart by their outcomes, so two readings with the same
-    outcomes everywhere are one reading for this check. Returns (kept, merged) where merged lists
-    (dropped id, kept id) pairs for the log.
-    """
+
+def conflicts(reading):
+    """Report simultaneous opposite actions, independent of rule ordering."""
+    for scenario in state_cases():
+        state = dict(scenario["start"])
+        event = scenario["events"][0][1]
+        key, value = EFFECT[event]
+        state[key] = value
+        actions = {r["do"] for r in reading["rules"]
+                   if event in r["when"] and all(state[c] for c in r["if"])}
+        if len(actions) > 1:
+            return True
+    return False
+
+
+def distinct(readings, scenarios):
+    """Merge only readings equivalent across every supported state and event."""
+    cases = list(state_cases())
     kept, merged, seen = [], [], {}
     for r in readings:
-        signature = tuple(simulate(r, s) for s in scenarios)
+        signature = tuple(simulate(r, s) for s in cases)
         if signature in seen:
             merged.append((r["id"], seen[signature]))
         else:

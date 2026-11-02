@@ -93,6 +93,97 @@ class Flow(unittest.TestCase):
         self.assertEqual((failed.stage, card["detail"], card["options"][0][0]), ("error", "HTTP 503", "retry"))
         self.assertEqual(failed.remaining, [])
 
+    def test_back_restores_question_and_discards_later_repair(self):
+        s, _ = start(B)
+        s.answer("yes")
+        s.answer("yes")
+        self.assertEqual(s.stage, "repair")
+        s.choose_repair("add")
+        self.assertEqual(s.stage, "confirm")
+        s.back()
+        self.assertEqual(s.stage, "repair")
+        s.back()
+        self.assertEqual((s.stage, s.pending["scenario"]["id"]), ("question", "S4"))
+        self.assertEqual(len(s.steps), 1)
+        s.answer("no")
+        self.assertEqual(s.stage, "confirm")
+        self.assertEqual(len(s.remaining[0]["rules"]), 1)
+        s.back()
+        s.back()
+        self.assertEqual((s.stage, s.pending["scenario"]["id"], len(s.steps)), ("question", "S1", 0))
+        with self.assertRaises(ValueError):
+            s.back()
+
+    def test_revisit_keeps_later_answers_and_reapplies_same_repair(self):
+        s, _ = start(B)
+        s.answer("yes")
+        s.answer("yes")
+        s.choose_repair("add")
+        s.revisit("S1")
+        self.assertEqual((s.stage, s.pending["scenario"]["id"], len(s.steps)), ("question", "S1", 0))
+        s.answer("no")
+        self.assertEqual(s.stage, "confirm")
+        self.assertEqual([(x["scenario"], x["answer"]) for x in s.steps], [("S1", "no"), ("S4", "yes")])
+        self.assertTrue(s.steps[1]["restored"])
+        self.assertIn("added", s.steps[1])
+        self.assertEqual(s.view()["card"]["mismatches"], 0)
+
+    def test_back_multiple_steps_keeps_later_answer_and_repair(self):
+        s, _ = start(B)
+        s.answer("yes")
+        s.answer("yes")
+        s.choose_repair("add")
+        s.back()  # repair choice
+        s.back()  # second question
+        s.back()  # first question
+        self.assertEqual(s.pending["scenario"]["id"], "S1")
+        self.assertEqual(s.view()["retained"][0]["answer"], "Yes")
+        s.answer("no")
+        self.assertEqual(s.stage, "confirm")
+        self.assertEqual(s.steps[1]["answer"], "yes")
+        self.assertIn("added", s.steps[1])
+
+    def test_revisit_keeps_not_sure_answer(self):
+        s, _ = start(B)
+        s.answer("not_sure")
+        s.answer("yes")
+        s.choose_repair("add")
+        s.revisit("S4")
+        s.answer("no")
+        self.assertEqual(s.steps[0]["answer"], "not_sure")
+        self.assertEqual(s.steps[1]["answer"], "no")
+
+    def test_retained_answer_conflict_is_not_silently_discarded(self):
+        import copy
+        scenarios = copy.deepcopy([SCENARIOS[0], SCENARIOS[3]])
+        scenarios[1].pop("repair")
+        rule = lambda event, condition, action: {"when": [event], "if": condition,
+                                               "device": "hallway_light", "do": action}
+        generated = readings.Generated("x", {"kind": "test"}, {}, readings=[
+            {"id": "R1", "label": "arrival only", "rules": [rule("arrive", ["dark"], "on")]},
+            {"id": "R2", "label": "sunset and off", "rules": [rule("sunset", ["home"], "on"),
+                                                                  rule("leave", [], "off")]},
+        ])
+        s = Session(generated, scenarios, strategy="boundary")
+        s.answer("yes")
+        s.answer("yes")
+        self.assertEqual(s.stage, "confirm")
+        s.revisit("S1")
+        s.answer("no")
+        self.assertEqual(s.stage, "none")
+        self.assertEqual([(step["scenario"], step["answer"]) for step in s.steps], [("S1", "no"), ("S4", "yes")])
+
+    def test_revisit_rejects_unknown_or_unanswered_question(self):
+        s, _ = start(A)
+        s.answer("no")
+        self.assertEqual(s.stage, "confirm")
+        with self.assertRaises(ValueError):
+            s.revisit("S4")
+        self.assertEqual(s.stage, "confirm")
+        s.decide("save")
+        with self.assertRaises(ValueError):
+            s.revisit("S1")
+
     def test_wrong_transitions_are_refused(self):
         s, _ = start(B)
         with self.assertRaises(ValueError):

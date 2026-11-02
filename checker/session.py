@@ -5,6 +5,7 @@ The initiative rule is explicit and testable (Lecture 03, act / ask / wait):
 - with one reading left it PROPOSES the restated rule and WAITS;
 - it never saves without the person's Save.
 """
+import copy
 import uuid
 
 from . import repair, restate, selector, simulator
@@ -49,6 +50,9 @@ class Session:
         self.pending = None      # the question on screen
         self.offer = None        # the proposed repair on screen
         self.saved = None
+        self._undo = []
+        self._replay = []  # later answers retained while a previous question is edited
+        self._held_current = None
         self.stage = None
         self._start()
 
@@ -78,6 +82,15 @@ class Session:
 
     def _advance(self):
         asked = [step["scenario"] for step in self.steps]
+        if self._replay and self.remaining and len(asked) < self.budget:
+            preserved = self._replay.pop(0)
+            scenario = self.library[preserved["scenario"]]
+            outcomes = {r["id"]: simulator.simulate(r, scenario) for r in self.remaining}
+            self.pending = {"scenario": scenario, "reason": preserved["reason"], "outcomes": outcomes}
+            self.stage = "question"
+            self.log("answer_restored", scenario=scenario["id"], answer=preserved["answer"])
+            self.answer(preserved["answer"], _restored=preserved)
+            return
         scenario, reason = selector.next_scenario(self.remaining, self.scenarios, asked, self.strategy, self.budget)
         if scenario:
             outcomes = {r["id"]: simulator.simulate(r, scenario) for r in self.remaining}
@@ -89,11 +102,61 @@ class Session:
         self.stage = {0: "none", 1: "confirm"}.get(len(self.remaining), "choose")
         self.log("result", stage=self.stage, remaining=ids(self.remaining))
 
-    def answer(self, reply):
+    def _remember(self):
+        self._undo.append(copy.deepcopy({name: getattr(self, name) for name in
+                                        ("remaining", "steps", "pending", "offer", "stage", "_replay", "_held_current")}))
+
+    def back(self):
+        """Return to the previous step while retaining answers after that point."""
+        if not self._undo or self.stage in ("saved", "edit"):
+            raise ValueError("there is no previous step")
+        known = copy.deepcopy(self.steps)
+        if self._held_current:
+            known = [step for step in known if step["scenario"] != self._held_current["scenario"]]
+            known.append(copy.deepcopy(self._held_current))
+        known.extend(copy.deepcopy(self._replay))
+        previous = self._undo.pop()
+        for name, value in previous.items():
+            setattr(self, name, value)
+        if self.stage == "question" and self.pending:
+            target = self.pending["scenario"]["id"]
+            matching = next((i for i, step in enumerate(known) if step["scenario"] == target), None)
+            if matching is not None:
+                self._held_current = known[matching]
+                self._replay = known[matching + 1:]
+        elif self.stage == "repair" and known:
+            self._held_current = known[-1]
+        self.log("back", stage=self.stage)
+
+    def revisit(self, scenario_id):
+        """Reopen a question, retaining later answers for re-evaluation."""
+        if self.stage not in ("confirm", "choose"):
+            raise ValueError("questions can only be revisited while reviewing")
+        for index, previous in enumerate(self._undo):
+            pending = previous.get("pending")
+            if (previous["stage"] == "question" and pending
+                    and pending["scenario"]["id"] == scenario_id):
+                target = next(i for i, step in enumerate(self.steps) if step["scenario"] == scenario_id)
+                retained = copy.deepcopy(self.steps[target + 1:])
+                for name, value in previous.items():
+                    setattr(self, name, copy.deepcopy(value))
+                self._replay = retained
+                self._held_current = None
+                self._undo = self._undo[:index]
+                self.log("revisit", scenario=scenario_id, stage=self.stage,
+                         retained=[step["scenario"] for step in retained])
+                return
+        raise ValueError("that question is not available to revisit")
+
+    def answer(self, reply, _restored=None):
         if self.stage != "question" or reply not in ANSWERS:
             raise ValueError("no question is waiting for that answer")
+        self._remember()
+        self._held_current = None
         scenario, outcomes = self.pending["scenario"], self.pending["outcomes"]
         step = {"scenario": scenario["id"], "reason": self.pending["reason"], "outcomes": outcomes, "answer": reply}
+        if _restored is not None:
+            step["restored"] = True
         self.steps.append(step)
         if reply == "not_sure":
             step.update(kept=ids(self.remaining), dropped=[])
@@ -115,6 +178,10 @@ class Session:
             self.offer = {"scenario": scenario, "rule": rule, "repaired": repaired}
             self.stage = "repair"
             self.log("repair_offered", scenario=scenario["id"], rule=rule)
+            if _restored and _restored.get("added") == rule:
+                self.choose_repair("add")
+            elif _restored and _restored.get("declined") == rule:
+                self.choose_repair("dont_add")
             return
         self.remaining = []
         self._advance()
@@ -122,6 +189,8 @@ class Session:
     def choose_repair(self, choice):
         if self.stage != "repair" or choice not in ("add", "dont_add", "edit"):
             raise ValueError("no proposed rule is waiting for that choice")
+        self._remember()
+        self._held_current = None
         step = self.steps[-1]
         self.log("repair_choice", scenario=step["scenario"], choice=choice, rule=self.offer["rule"])
         if choice == "edit":
@@ -170,7 +239,10 @@ class Session:
         out = []
         for n, step in enumerate(self.steps, 1):
             s = self.library[step["scenario"]]
-            item = {"number": n, "situation": s["text"], "question": s["question"], "answer": ANSWERS[step["answer"]]}
+            item = {"number": n, "scenario": s["id"], "events": [event for _, event in s["events"]],
+                    "situation": s["text"], "question": s["question"], "answer": ANSWERS[step["answer"]]}
+            if step.get("restored"):
+                item["restored"] = True
             if "added" in step:
                 item["note"] = "Added: " + restate.rule_text(step["added"])
             elif "declined" in step:
@@ -200,6 +272,7 @@ class Session:
             s = self.pending["scenario"]
             return {"kind": "question", "number": len(self.steps) + 1, "budget": self.budget, "situation": s["text"],
                     "question": s["question"], "why": self._why(self.pending["reason"], s),
+                    "start": s["start"], "event": s["events"][0][1], "time": s["events"][0][0],
                     "options": [[k, v] for k, v in ANSWERS.items()]}
         if self.stage == "repair":
             return {"kind": "repair", "rule": restate.rule_text(self.offer["rule"]),
@@ -211,13 +284,15 @@ class Session:
             mismatches = [row for row in self._situations(reading) if row["match"] is False]
             return {"kind": "confirm", "rules": [restate.rule_text(r) for r in reading["rules"]],
                     "never": restate.never(reading), "confirmed": confirmed, "mismatches": len(mismatches),
+                    "rule_parts": reading["rules"],
                     "situations": self._situations(reading), "options": [["save", "Save"], ["edit", "Edit my request"]]}
         if self.stage == "choose":
             differ = simulator_differences(self.remaining, self.scenarios)
             return {"kind": "choose", "differences": differ,
                     "readings": [{"id": r["id"], "rules": [restate.rule_text(x) for x in r["rules"]],
+                                  "rule_parts": r["rules"], "situations": self._situations(r),
                                   "never": restate.never(r)} for r in self.remaining],
-                    "options": [[f"use:{r['id']}", f"Use rule {n}"] for n, r in enumerate(self.remaining, 1)]
+                    "options": [[f"use:{r['id']}", f"Use and save rule {n}"] for n, r in enumerate(self.remaining, 1)]
                     + [["edit", "Edit my request"]]}
         if self.stage == "none":
             return {"kind": "none", "options": [["edit", "Edit my request"]]}
@@ -244,7 +319,11 @@ class Session:
 
     def view(self):
         return {"session": self.id, "stage": self.stage, "request": self.request, "source": self.generated.source,
-                "history": self._history(), "card": self._card(), "inspect": self._inspect()}
+                "can_back": bool(self._undo) and self.stage not in ("saved", "edit"),
+                "history": self._history(),
+                "retained": [{"scenario": step["scenario"], "situation": self.library[step["scenario"]]["text"],
+                              "answer": ANSWERS[step["answer"]]} for step in self._replay],
+                "card": self._card(), "inspect": self._inspect()}
 
 
 def simulator_differences(readings, scenarios):

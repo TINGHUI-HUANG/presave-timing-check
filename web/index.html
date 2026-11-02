@@ -87,23 +87,94 @@
     .why { margin-top: 7px; }
     .done { padding: 8px 13px; }
   }
+
+/* A calm, immersive control room: the visual scene supports the decision. */
+[hidden] { display: none !important; }
+:root { color-scheme: dark; --bg:#0c1115; --card:#151e21; --ink:#f2f2e9; --muted:#a8b7b2; --line:#33433f; --accent:#c9f27a; --accent-soft:#26372d; --warn:#ffe4a9; --warn-soft:#453825; --ok:#d4f9aa; --ok-soft:#24382d; --planned:#a8b7b2; }
+body { background:radial-gradient(ellipse at 80% 0%,#2a3c31 0%,#111a1b 36%,#0c1115 75%); color:var(--ink); font:16px/1.55 "Segoe UI",system-ui,sans-serif; min-height:100vh; }
+.wrap {max-width:1050px;padding-left:28px;padding-right:28px} header {background:rgba(12,17,21,.7);border-color:var(--line)}
+header .wrap {align-items:center;padding-top:19px;padding-bottom:19px} h1 {font-size:17px;letter-spacing:.02em} .brand-mark {display:inline-grid;place-items:center;width:30px;height:30px;border:1px solid #b9e97d;border-radius:50%;color:#c9f27a;margin-right:2px} .tag {border:0;margin-left:auto;text-transform:uppercase;letter-spacing:.12em;font-size:10px}
+main.wrap {padding-top:46px;padding-bottom:80px} .hero {display:grid;grid-template-columns:1.3fr 1fr;gap:35px;align-items:end;margin-bottom:30px} .eyebrow {color:#c9f27a;font-size:11px;text-transform:uppercase;letter-spacing:.18em;font-weight:700} .hero h2 {font-size:clamp(34px,5vw,58px);letter-spacing:-.045em;line-height:1.06;font-weight:550;margin:12px 0 16px;max-width:670px} .hero p {color:var(--muted);max-width:540px;margin:0;font-size:16px} .hero-aside {border-left:1px solid var(--line);padding-left:22px;color:var(--muted);font-size:13px} .hero-aside strong {display:block;color:var(--ink);font-size:14px;margin-bottom:5px}
+.progress {display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 28px} .progress div {border-top:2px solid var(--line);padding-top:10px;color:var(--muted);font-size:12px;letter-spacing:.03em} .progress div.active {color:var(--ink);border-color:var(--accent)} .progress span {color:var(--accent);margin-right:8px}
+.scope {background:transparent;border:0;border-left:2px solid #7e9d72;border-radius:0;padding:4px 13px;color:var(--muted);margin:0 0 24px;font-size:12px}
+.card, details.inspect {background:linear-gradient(145deg,rgba(32,44,42,.98),rgba(21,30,33,.98));border:1px solid var(--line);border-radius:18px;padding:25px 28px;box-shadow:0 16px 50px rgba(0,0,0,.13);margin-bottom:14px} .card h2 {color:var(--ink);font-size:20px;letter-spacing:-.02em;margin-bottom:10px} .card .card-kicker {color:var(--accent);font-size:11px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+textarea {background:#10191a;color:var(--ink);border:1px solid #52655d;min-height:92px;padding:15px;border-radius:11px} textarea::placeholder {color:#82938e} textarea:focus-visible, button:focus-visible, summary:focus-visible {outline:3px solid #dcffa3;outline-offset:3px} .examples {margin-top:17px} .chip {background:#202d2b;border:1px solid #45574f;color:#d3dfd6;padding:7px 12px;font-size:12px} .chip:hover {background:#30413a;border-color:var(--accent)}
+button {background:transparent;border-color:#6d8578;color:#e0ebdf;padding:11px 18px;font-weight:600;border-radius:9px;transition:background .15s,border-color .15s} button:hover:not(:disabled) {background:#30413a;border-color:var(--accent)} button.primary {background:var(--accent);color:#182015;border-color:var(--accent)} button.primary:hover:not(:disabled) {background:#ddffa0} .row {gap:9px;margin-top:18px} .status {color:#ffd7aa}
+.quote {font-size:17px;color:#eff4e9} .badge,.small,.why {color:var(--muted)} .situation {background:#182723;border:1px solid #3a5146;border-radius:12px;padding:16px;margin:12px 0;color:#e2eee1} .question {font-size:22px;line-height:1.3;letter-spacing:-.02em;margin:20px 0 0}
+.scene {display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:15px 0} .scene .scene-fact {display:flex;align-items:center;gap:12px;min-width:0;background:#111c1b;border:1px solid #30433b;border-radius:9px;padding:10px 12px;color:#e1ecdf;font-size:13px} .scene-fact .fact-copy {min-width:0;line-height:1.4} .scene-fact .rule-icon {width:40px;height:40px;flex-basis:40px} .clock-face {color:#c7e3b0} .scene small {display:block;color:#9cb2a3;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px} .scene-visual {position:relative;overflow:hidden;margin-top:16px;border:1px solid #3c5144;border-radius:12px;background:#172a2c}
+.scene-visual svg {display:block;width:100%;height:clamp(150px, 28vw, 235px)}
+.scene-visual .sky-day {opacity:1} .scene-visual.dark .sky-day {opacity:0}
+.scene-visual .sky-dusk {opacity:0} .scene-visual.sunset .sky-dusk {animation:scene-dusk 7s ease-in-out forwards}
+.scene-visual .sun {transform-origin:120px 48px} .scene-visual.sunset .sun {animation:scene-sunset 7s ease-in-out forwards}
+.scene-visual.dark .sun {opacity:0} .scene-visual .stars {opacity:0} .scene-visual.dark .stars {opacity:.8} .scene-visual.sunset .stars {animation:scene-stars 7s ease-in-out forwards}
+.scene-visual .person {transform:translateX(var(--person-start));animation-fill-mode:forwards}
+.scene-visual.arrive .person {animation:scene-arrive 4s ease-in-out forwards}
+.scene-visual.leave .person {animation:scene-leave 4s ease-in-out forwards}
+.scene-visual .person-body {transform-origin:157px 178px;animation:person-breathe 2.6s ease-in-out infinite}
+.scene-visual.arrive .leg-a, .scene-visual.leave .leg-a {transform-origin:157px 178px;animation:walk-a .5s ease-in-out 8 alternate}
+.scene-visual.arrive .leg-b, .scene-visual.leave .leg-b {transform-origin:157px 178px;animation:walk-b .5s ease-in-out 8 alternate}
+@keyframes person-breathe {0%,100% {transform:translateY(0)}50% {transform:translateY(-2px)}}
+@keyframes walk-a {from {transform:rotate(-25deg)}to {transform:rotate(25deg)}} @keyframes walk-b {from {transform:rotate(25deg)}to {transform:rotate(-25deg)}}
+.scene-visual .lamp-glow, .scene-visual .lamp-lit {opacity:0} .scene-visual.light-on .lamp-glow {opacity:.55} .scene-visual.light-on .lamp-lit {opacity:1}
+.scene-caption {display:flex;justify-content:space-between;gap:12px;padding:9px 13px;color:#adc2b4;background:#13221f;font-size:11px;letter-spacing:.02em}
+.scene-caption strong {color:#dfead7;font-weight:600}
+@keyframes scene-dusk {to {opacity:1}} @keyframes scene-sunset {to {transform:translateY(64px);opacity:.35}} @keyframes scene-stars {0%,45% {opacity:0}100% {opacity:.8}}
+@keyframes scene-arrive {from {transform:translateX(0)}to {transform:translateX(283px)}} @keyframes scene-leave {from {transform:translateX(283px)}to {transform:translateX(0)}}
+
+.rule {background:#1d3029;border:1px solid #3d5848;color:#e7f4dc;padding:14px;border-radius:10px} .rule-flow {display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0} .rule-flow > div {background:#101d1a;border-radius:8px;padding:10px;font-size:13px} .rule-flow small {display:block;text-transform:uppercase;color:#a6c398;font-size:10px;letter-spacing:.1em}.never {background:var(--warn-soft);color:var(--warn)} .done {padding:12px 20px;background:#17221f;font-size:13px} .done b {color:var(--ink)}
+.history {margin:0 0 14px;color:var(--muted);font-size:13px}.history summary {padding:10px 4px}.history .done {margin-top:8px}
+.option {border-color:#43574d;background:#15221e}.saved {background:#203629;border-color:#6d9d69}.saved h2 {color:#d4f9aa}.planned {color:var(--muted)} details.inspect {font-size:13px;margin-top:35px;overflow:auto} summary {cursor:pointer} table {width:100%} th {background:#26342f} td,th {border-color:#405049} pre {background:#101a19;color:#dbe8d8} .card:focus {outline:none} .card:focus-visible {outline:2px solid #b8d983;outline-offset:2px} .notice {background:#493722;color:#ffe6bd;padding:12px;border-radius:9px;margin:12px 0} .inline-error {color:#ffddba;margin-top:12px}
+
+.rule-flow > div {display:flex;align-items:center;gap:11px;min-width:0}
+.rule-flow .rule-copy {min-width:0;line-height:1.4}.rule-flow .rule-copy small {margin-bottom:4px}
+.rule-icons {display:flex;flex-wrap:wrap;gap:3px;flex-shrink:0;max-width:79px}
+.rule-icon {width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;color:#c7e3b0;background:#223a2c;border-radius:11px;overflow:hidden}
+.rule-icon svg {width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.rule-icon .icon-motion {transform-origin:center;transform-box:fill-box;animation:icon-breathe 3s ease-in-out infinite}
+.rule-icon.arrive .icon-motion {animation:icon-arrive 2.6s ease-in-out infinite}
+.rule-icon.leave .icon-motion {animation:icon-leave 2.6s ease-in-out infinite}
+.rule-icon.sunset .icon-motion {animation:icon-sunset 3.2s ease-in-out infinite}
+.rule-icon.light-on {color:#f6df91;background:#4b472a}.rule-icon.light-on .icon-motion {animation:icon-glow 2s ease-in-out infinite}
+.rule-icon.light-off {color:#95aaa0;background:#283630}
+@keyframes icon-arrive {0%,100% {transform:translateX(-2px)}50% {transform:translateX(2px)}}
+@keyframes icon-leave {0%,100% {transform:translateX(2px)}50% {transform:translateX(-2px)}}
+@keyframes icon-sunset {0%,100% {transform:translateY(-2px)}50% {transform:translateY(2px)}}
+@keyframes icon-breathe {0%,100% {opacity:.7}50% {opacity:1}}
+@keyframes icon-glow {0%,100% {opacity:.65}50% {opacity:1}}
+.back-step {display:inline-flex;align-items:center;gap:8px;margin:0 0 22px;padding:11px 16px;font-size:14px;font-weight:700;color:#e7f8c7;background:#263c2d;border:1px solid #a4d77a;box-shadow:0 0 0 2px rgba(164,215,122,.12)}
+.back-step:hover:not(:disabled) {background:#36533a;border-color:#dcffa3;color:#fff}
+
+
+.rule-flow > .event-cell {display:block;border:1px solid #567664;padding:8px 10px}
+.event-cell > small {margin-bottom:5px}
+.event-link {display:flex;align-items:center;gap:9px;width:100%;padding:3px;border:0;background:transparent;color:#e7f8dc;text-align:left;font-size:13px;font-weight:600}
+.event-link:hover:not(:disabled) {background:#263e30;color:#fff}
+.event-link .event-arrow {margin-left:auto;color:#c9f27a;font-size:16px}
+.event-review {grid-column:1/-1;margin-top:9px;border-top:1px solid #506e5c;padding-top:8px;color:#d8e7d6;font-size:12px}
+.event-review p {margin:0 0 8px}.event-review button {display:block;width:100%;margin-top:6px;padding:8px;text-align:left;font-size:12px}.event-review strong {display:block;color:#c9f27a;margin-top:3px}
+
+@media(max-width:680px) {.wrap {padding-left:18px;padding-right:18px} main.wrap {padding:30px 18px 55px}.hero {grid-template-columns:1fr;gap:18px}.hero h2 {font-size:39px}.hero-aside {padding-left:12px}.card,details.inspect {padding:19px;border-radius:14px}.tag {font-size:9px}.progress div {font-size:11px}.rule-flow {grid-template-columns:1fr}.scene {grid-template-columns:1fr 1fr}.row button {flex:1 1 auto} table {min-width:540px} details.more {overflow-x:auto}}
+@media(prefers-reduced-motion:reduce) {*,*::before,*::after {animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important} .scene-visual.sunset .sky-dusk {opacity:1} .scene-visual.sunset .stars {opacity:.8}}
+
 </style>
 </head>
 <body>
-<header><div class="wrap"><h1>Automation builder</h1><span class="tag">pre-save timing check · research prototype</span></div></header>
+<header><div class="wrap"><span class="brand-mark" aria-hidden="true">✳</span><h1>Home, in rhythm.</h1><span class="tag">Automation studio · Prototype</span></div></header>
 <main class="wrap">
+  <section class="hero" id="intro"><div><div class="eyebrow">A little more certainty, before you save</div><h2>Make your home<br>work your way.</h2><p>Describe what you want. We’ll walk through a few moments together, so your automation does what you expect.</p></div><div class="hero-aside"><strong>Simple to start. Clear to save.</strong>Check the details before your rule is saved. You stay in control at every step.</div></section>
+  <nav class="progress" aria-label="Your progress"><div id="step-describe" class="active"><span>01</span> Describe</div><div id="step-check"><span>02</span> Check</div><div id="step-save"><span>03</span> Save</div></nav>
   <div class="scope" id="scope" data-test="scope"></div>
   <section class="card" id="compose" data-test="compose">
-    <h2>New automation</h2>
+    <div class="card-kicker">Step 01 / Your idea</div><h2>What would you like to happen?</h2><p class="small">Describe your automation in one sentence. You can choose an example to get started.</p>
     <label for="req" class="sr">Describe the automation in one sentence</label>
-    <textarea id="req" placeholder="Describe the automation in one sentence"></textarea>
+    <textarea id="req" maxlength="300" placeholder="e.g. Turn on the hallway light when I get home after dark"></textarea>
     <div class="examples">Examples:</div>
     <div class="chips" id="chips"></div>
-    <div class="row"><button class="primary" id="create" data-choice="create">Create rule</button></div>
+    <div class="row"><button class="primary" id="create" data-choice="create">Check my automation <span aria-hidden="true">→</span></button></div>
     <div class="status" id="status" aria-live="polite"></div>
   </section>
   <div id="thread"></div>
-  <details class="inspect" id="inspect" data-test="inspect">
+  <details class="inspect" id="inspect" data-test="inspect" hidden>
     <summary>How this was checked (for reviewers)</summary>
     <div id="inspect-body"><p class="small">No request yet.</p></div>
   </details>
@@ -111,7 +182,7 @@
 <script>
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
-let view = null, busy = false, timer = null;
+let view = null, busy = false, timer = null, pendingAction = null;
 
 async function api(path, body) {
   const response = await fetch(path, {method: body ? "POST" : "GET", headers: {"Content-Type": "application/json"},
@@ -123,6 +194,21 @@ async function api(path, body) {
 
 function status(html) { $("#status").innerHTML = html; }
 
+function showStep(phase) {
+  const describing = phase === "describe";
+  $("#intro").hidden = !describing;
+  $("#scope").hidden = !describing;
+  $("#compose").hidden = !describing;
+  $("#thread").hidden = describing;
+  $("#inspect").hidden = describing;
+  ["describe", "check", "save"].forEach((step) => {
+    const el = $(`#step-${step}`);
+    el.classList.toggle("active", step === phase);
+    if (step === phase) el.setAttribute("aria-current", "step");
+    else el.removeAttribute("aria-current");
+  });
+}
+
 async function init() {
   const meta = await api("/api/meta");
   $("#scope").textContent = meta.scope;
@@ -133,6 +219,8 @@ async function init() {
     $("#chips").append(chip);
   }
   $("#create").onclick = start;
+  const session = sessionStorage.getItem("automation-session");
+  if (session) { try { view = await api(`/api/session?session=${encodeURIComponent(session)}`); render(); } catch (_) { sessionStorage.removeItem("automation-session"); } }
   $("#req").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); start(); } });
 }
 
@@ -149,6 +237,7 @@ async function start() {
   try {
     view = await api("/api/start", {request: text});
     status("");
+    pendingAction = null; sessionStorage.setItem("automation-session", view.session);
     render();
   } catch (error) {
     status(esc(error.message));
@@ -160,12 +249,25 @@ async function start() {
 async function act(path, body, button) {
   if (busy) return;
   busy = true;
-  button.closest(".card").querySelectorAll("button").forEach((b) => (b.disabled = true));
+  const panel = button.closest(".card");
+  panel.querySelectorAll("button").forEach((b) => (b.disabled = true));
+  const key = JSON.stringify([path, body]);
+  if (!pendingAction || pendingAction.key !== key) pendingAction = {key, id: crypto.randomUUID()};
   try {
-    view = await api(path, {session: view.session, ...body});
-    render();
+    view = await api(path, {session: view.session, ...body, action_id: pendingAction.id});
+    pendingAction = null; status(""); render();
   } catch (error) {
-    status(esc(error.message));
+    // A response can be lost after the server committed the action. Read the current session first.
+    try {
+      const current = await api(`/api/session?session=${encodeURIComponent(view.session)}`);
+      if (JSON.stringify(current) !== JSON.stringify(view)) {
+        view = current; pendingAction = null; status(""); render(); return;
+      }
+    } catch (_) { /* Keep the same action ID for a safe retry. */ }
+    panel.querySelectorAll("button").forEach((b) => (b.disabled = false));
+    let message = panel.querySelector(".inline-error");
+    if (!message) { message = document.createElement("div"); message.className = "inline-error"; message.setAttribute("role", "alert"); panel.append(message); }
+    message.textContent = `We couldn't complete that step: ${error.message}. Please try again.`;
   } finally { busy = false; }
 }
 
@@ -192,42 +294,138 @@ function buttons(options, primary) {
 }
 
 function ruleBox(rules) { return '<div class="rule">' + rules.map((r) => `<div>${esc(r)}</div>`).join("") + "</div>"; }
+function ruleIcon(kind) {
+  const symbols = {
+    arrive: '<path d="M4 13l8-7 8 7M6 12v7h12v-7"/><path class="icon-motion" d="M3 17h7m-2-3 3 3-3 3"/>',
+    leave: '<path d="M4 13l8-7 8 7M6 12v7h12v-7"/><path class="icon-motion" d="M12 17h8m-2-3 3 3-3 3"/>',
+    sunset: '<path d="M3 17h18M5 20h14"/><path class="icon-motion" d="M8 17a4 4 0 0 1 8 0M12 4v3m-6 2 2 2m10-2-2 2"/>',
+    dark: '<path class="icon-motion" d="M16 4a7 7 0 1 0 4 12A7 7 0 0 1 16 4z"/><path d="M5 5v2m-1-1h2"/>',
+    home: '<path d="M4 12l8-7 8 7M6 11v9h12v-9"/><circle class="icon-motion" cx="12" cy="13" r="2"/><path d="M9 19c0-3 6-3 6 0"/>',
+    away: '<path d="M3 12l7-6 7 6M5 11v8h10v-8"/><circle cx="19" cy="13" r="1.5"/><path class="icon-motion" d="M19 15v3m0-1 2 2m-2-2-2 2"/>',
+    always: '<circle cx="12" cy="12" r="8"/><path class="icon-motion" d="M12 7v5l3 2"/>',
+    'light-on': '<g class="icon-motion"><path d="M9 17c0-2-3-3-3-7a6 6 0 0 1 12 0c0 4-3 5-3 7zM9 20h6M12 1v2M3 4l2 2m16-2-2 2M1 11h2m18 0h2"/></g>',
+    'light-off': '<path d="M9 17c0-2-3-3-3-7a6 6 0 0 1 12 0c0 4-3 5-3 7zM9 20h6"/><path d="M4 4l16 16"/>'
+  };
+  return `<span class="rule-icon ${esc(kind)}" aria-hidden="true"><svg viewBox="0 0 24 24">${symbols[kind] || symbols.always}</svg></span>`;
+}
+function clockIcon(time) {
+  const [hour, minute] = time.split(":").map(Number);
+  const hours = (hour % 12) * 30 + minute * 0.5;
+  const minutes = minute * 6;
+  return `<span class="rule-icon clock-face" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 12V7" transform="rotate(${hours} 12 12)"/><path d="M12 12V5" transform="rotate(${minutes} 12 12)"/><circle cx="12" cy="12" r=".7" fill="currentColor" stroke="none"/></svg></span>`;
+}
+function sceneFact(label, value, icon) {
+  return `<div class="scene-fact">${icon}<span class="fact-copy"><small>${esc(label)}</small>${esc(value)}</span></div>`;
+}
+function ruleFlow(parts) {
+  const events = {arrive: "You arrive home", leave: "You leave home", sunset: "It gets dark"};
+  const conditions = {home: "You are home", dark: "It is dark"};
+  return (parts || []).map((r) => `<div class="rule-flow"><div class="event-cell"><small>When · select an event to review</small>${r.when.map((e) => `<button type="button" class="event-link" data-event="${esc(e)}" aria-label="Review questions about ${esc(events[e])}">${ruleIcon(e)}<span>${esc(events[e])}</span><span class="event-arrow" aria-hidden="true">↗</span></button>`).join("")}</div><div><span class="rule-icons">${(r.if.length ? r.if : ["always"]).map(ruleIcon).join("")}</span><span class="rule-copy"><small>Only if</small>${r.if.length ? r.if.map((c) => esc(conditions[c])).join(" and ") : "Always"}</span></div><div>${ruleIcon('light-' + r.do)}<span class="rule-copy"><small>Then</small>Turn ${esc(r.do)} the hallway light</span></div></div>`).join("");
+}
+
+function wireEventReview(el) {
+  const events = {arrive: "arriving home", leave: "leaving home", sunset: "it getting dark"};
+  el.querySelectorAll("button[data-event]").forEach((button) => {
+    button.onclick = () => {
+      if (busy) return;
+      const matches = view.history.filter((h) => h.events.includes(button.dataset.event));
+      el.querySelectorAll(".event-review").forEach((node) => node.remove());
+      if (matches.length === 1) return act("/api/revisit", {scenario: matches[0].scenario}, button);
+      const panel = document.createElement("div");
+      panel.className = "event-review";
+      panel.setAttribute("role", "region");
+      if (!matches.length) {
+        panel.innerHTML = `<p>No question about ${esc(events[button.dataset.event])} was asked in this check. To change this event, edit your request and start again.</p><button type="button" class="review-edit">Edit my request</button>`;
+        button.closest(".event-cell").append(panel);
+        panel.querySelector(".review-edit").onclick = () => sendEdit(button);
+      } else {
+        panel.innerHTML = `<p>${matches.length === 1 ? "Review this answer:" : "Which situation would you like to revisit?"} Your other answers will be kept and checked again.</p>` +
+          matches.map((h) => `<button type="button" class="review-question" data-scenario="${esc(h.scenario)}">Q${h.number}: ${esc(h.situation)} <strong>Answer: ${esc(h.answer)}</strong></button>`).join("");
+        button.closest(".event-cell").append(panel);
+        panel.querySelectorAll(".review-question").forEach((choice) => {
+          choice.onclick = () => act("/api/revisit", {scenario: choice.dataset.scenario}, choice);
+        });
+      }
+      panel.querySelector("button").focus();
+    };
+  });
+}
+
+function sceneVisual(c) {
+  const events = {sunset: "The sky gets darker", arrive: "You arrive home", leave: "You leave home"};
+  const personStart = c.start.home ? "283px" : "0px";
+  return `<div class="scene-visual ${esc(c.event)} ${c.start.dark ? "dark" : "day"} light-${esc(c.start.light)}" style="--person-start:${personStart}">
+    <svg viewBox="0 0 700 220" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(events[c.event])}. The hallway light is ${esc(c.start.light)} before the event.">
+      <defs>
+        <linearGradient id="night-sky" x2="0" y2="1"><stop stop-color="#182f37"/><stop offset="1" stop-color="#30463c"/></linearGradient>
+        <linearGradient id="day-sky" x2="0" y2="1"><stop stop-color="#72958a"/><stop offset="1" stop-color="#e0b984"/></linearGradient>
+        <linearGradient id="dusk-sky" x2="0" y2="1"><stop stop-color="#253743"/><stop offset="1" stop-color="#866a5a"/></linearGradient>
+        <radialGradient id="light-pool"><stop stop-color="#f5d88f" stop-opacity=".8"/><stop offset="1" stop-color="#f5d88f" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect width="700" height="220" fill="url(#night-sky)"/><rect class="sky-day" width="700" height="220" fill="url(#day-sky)"/><rect class="sky-dusk" width="700" height="220" fill="url(#dusk-sky)"/>
+      <g class="stars" fill="#d5ead7"><circle cx="70" cy="35" r="1.5"/><circle cx="195" cy="29" r="1"/><circle cx="260" cy="62" r="1.3"/><circle cx="570" cy="31" r="1.5"/><circle cx="630" cy="67" r="1"/></g>
+      <circle class="sun" cx="120" cy="48" r="19" fill="#f2cd8d" opacity=".9"/>
+      <path d="M0 150 Q105 117 198 150 T370 150 T540 145 T700 152 V220 H0Z" fill="#344c3d"/><path d="M0 183 Q175 168 325 183 T700 180 V220 H0Z" fill="#1f352d"/>
+      <path d="M80 220 Q185 190 353 196" fill="none" stroke="#71816b" stroke-width="16" opacity=".45"/>
+      <g class="house"><path d="M292 101 L443 24 L596 101 Z" fill="#1a2d2b" stroke="#91aa92" stroke-width="3" stroke-linejoin="round"/><path d="M315 94 L443 30 L571 94 V188 H315Z" fill="#344b3d" stroke="#91aa92" stroke-width="3"/><path d="M335 105 H422 V167 H335Z" fill="#152923" stroke="#79927e" stroke-width="2"/><path d="M378 105 V167 M335 136 H422" stroke="#79927e" stroke-width="2"/><path d="M473 105 H545 V188 H473Z" fill="#1b2c28" stroke="#819b85" stroke-width="2"/><circle cx="531" cy="149" r="2.5" fill="#c6d9b8"/>
+      <ellipse class="lamp-glow" cx="378" cy="135" rx="90" ry="70" fill="url(#light-pool)"/><path class="lamp-lit" d="M337 107 H420 V165 H337Z" fill="#eacb83" opacity=".72"/><path class="lamp-lit" d="M378 105 V167 M335 136 H422" stroke="#637662" stroke-width="3"/>
+      <path d="M465 188 H553" stroke="#b1c1a5" stroke-width="4" stroke-linecap="round"/></g>
+      <g class="person" fill="#d3e5ca" stroke="#d3e5ca" stroke-linecap="round"><g class="person-body"><circle cx="157" cy="151" r="7" stroke="none"/><path d="M157 161 V178 M157 165 L148 171 M157 165 L165 170" stroke-width="4" fill="none"/><path class="leg leg-a" d="M157 178 L150 188" stroke-width="4" fill="none"/><path class="leg leg-b" d="M157 178 L165 188" stroke-width="4" fill="none"/></g></g>
+      <path d="M0 197 Q167 190 292 198 T700 193 V220 H0Z" fill="#162c25" opacity=".6"/>
+    </svg>
+    <div class="scene-caption"><span><strong>${esc(events[c.event])}</strong> · imagined moment</span><span>Light before: <strong>${esc(c.start.light)}</strong></span></div>
+  </div>`;
+}
 function neverBox(never) { return (never || []).map((n) => `<div class="never">${esc(n)}</div>`).join(""); }
 
 function render() {
   const thread = $("#thread");
+  const phase = view.card.kind === "saved" ? "save" : ["confirm", "choose"].includes(view.card.kind) ? "save" : "check";
+  showStep(phase);
   thread.innerHTML = "";
   thread.append(card("request", `<h2>Your request</h2><div class="quote">“${esc(view.request)}”</div>
     <div class="badge">${sourceText(view.source, view.card.kind)}</div>`));
-  for (const h of view.history) {
-    thread.append(card(`done-${h.number}`, `Q${h.number} · ${esc(h.situation)} ${esc(h.question)} → <b>${esc(h.answer)}</b>` +
-      (h.note ? `<div class="note">${esc(h.note)}</div>` : ""), "done"));
+  if (view.history.length) {
+    const history = document.createElement("details");
+    history.className = "history";
+    history.innerHTML = `<summary>Your answers (${view.history.length})</summary>`;
+    for (const h of view.history) {
+      history.append(card(`done-${h.number}`, `Q${h.number} · ${esc(h.situation)} ${esc(h.question)} → <b>${esc(h.answer)}</b>${h.restored ? ' <span class="small">(kept)</span>' : ''}` +
+        (h.note ? `<div class="note">${esc(h.note)}</div>` : ""), "done"));
+    }
+    thread.append(history);
+  }
+  if (view.retained && view.retained.length) {
+    const kept = card("retained", `<h2>Other answers kept</h2><p class="small">These answers will be checked again after you update this question.</p><ul class="confirmed">${view.retained.map((h) => `<li>${esc(h.situation)} — <b>${esc(h.answer)}</b></li>`).join("")}</ul>`, "done");
+    thread.append(kept);
   }
   const c = view.card;
   let el;
   if (c.kind === "question") {
-    el = card("question", `<h2>Question ${c.number} of up to ${c.budget}</h2>
+    el = card("question", `<div class="card-kicker">Step 02 / Check together · Question ${c.number} of up to ${c.budget}</div><h2>Imagine this moment.</h2>
+      ${sceneVisual(c)}
+      <div class="scene">${sceneFact("Time", c.time, clockIcon(c.time))}${sceneFact("Before the event", c.start.home ? "You are home" : "You are away", ruleIcon(c.start.home ? "home" : "away"))}${sceneFact("Light before", c.start.light, ruleIcon("light-" + c.start.light))}${sceneFact("Event", ({arrive:"You arrive home",leave:"You leave home",sunset:"It gets dark"})[c.event], ruleIcon(c.event))}</div>
       <div class="situation">${esc(c.situation)}</div><div class="question">${esc(c.question)}</div>
-      ${buttons(c.options, false)}<div class="why">Why I'm asking: ${esc(c.why)}</div>`);
+      <div class="why">There is no right answer—choose what you want to happen. ${esc(c.why)}</div>${buttons(c.options, false)}`);
     wire(el, (v) => ["/api/answer", {answer: v}]);
   } else if (c.kind === "repair") {
-    el = card("repair", `<h2>Add a missing rule?</h2><div>None of the rules I built does what you just said. I can add this rule:</div>
+    el = card("repair", `<div class="card-kicker">Step 02 / One more detail</div><h2>Add a missing rule?</h2><div>None of the rules I built does what you just said. I can add this rule:</div>
       ${ruleBox([c.rule])}${buttons(c.options, true)}<div class="why">Nothing is added unless you choose Add this rule.</div>`);
     wire(el, (v) => (v === "edit" ? null : ["/api/repair", {choice: v}]));
   } else if (c.kind === "confirm") {
     const rows = c.situations.map((s) => `<tr><td>${esc(s.label)}</td><td>light ${esc(s.outcome)}</td><td>${esc(s.checked)}</td></tr>`).join("");
-    el = card("confirm", `<h2>Here is the rule I will save</h2>${ruleBox(c.rules)}${neverBox(c.never)}
-      ${c.confirmed.length ? `<div class="small">What you told me:</div><ul class="confirmed">${c.confirmed.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
-      <details class="more"><summary>What it does in every situation I can check</summary>
+    el = card("confirm", `<div class="card-kicker">Step 03 / Review before saving</div><h2>Does this feel right?</h2><p class="small">Check the trigger, conditions and action. Select an event to revisit a related answer. Your other answers will be kept and checked again. Nothing is saved until you choose Save.</p>${ruleFlow(c.rule_parts)}${ruleBox(c.rules)}${neverBox(c.never)}
+      ${c.mismatches ? `<div class="notice" role="alert">This rule differs from ${c.mismatches} of your answers. Review the details below or edit your request.</div>` : ""}${c.confirmed.length ? `<div class="small">What you told me:</div><ul class="confirmed">${c.confirmed.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+      <details class="more"><summary>See checked and unchecked situations</summary>
       <table><tr><th>Situation</th><th>Result</th><th>Checked with you?</th></tr>${rows}</table></details>
       ${buttons(c.options, true)}
-      <div class="why">Edit puts your request back in the box above. <span class="planned">rule editor: planned</span></div>`);
+      <div class="why">Edit returns you to the describe step. <span class="planned">rule editor: planned</span></div>`);
     wire(el, (v) => (v === "edit" ? null : ["/api/decide", {choice: v}]));
   } else if (c.kind === "choose") {
     const diff = c.differences.map((d) => `<div class="small">They differ here: ${esc(d.situation)} ` +
       d.outcomes.map((o, i) => `Rule ${i + 1}: light ${esc(o)}`).join("; ") + "</div>").join("");
-    el = card("choose", `<h2>These rules still act differently</h2><div>Choose the one you mean, or edit your request.</div>${diff}
-      <div class="options">${c.readings.map((r, i) => `<div class="option"><b>Rule ${i + 1}</b>${ruleBox(r.rules)}${neverBox(r.never)}</div>`).join("")}</div>
+    el = card("choose", `<div class="card-kicker">Step 03 / Choose and save</div><h2>Choose the rule you mean.</h2><div>These interpretations still differ. Choosing one saves it; you can also edit your request. The comparisons below cover the listed situations; the rules may also differ in other supported states. Select an event to revisit a related question; your other answers will be kept and checked again.</div>${diff || '<div class="notice">These rules differ in other supported states that the questions did not cover. Review their conditions carefully.</div>'}
+      <div class="options">${c.readings.map((r, i) => `<div class="option"><b>Rule ${i + 1}</b>${ruleFlow(r.rule_parts)}${ruleBox(r.rules)}${neverBox(r.never)}${r.situations.some((s) => s.match === false) ? '<div class="notice">This rule differs from an answer you gave.</div>' : ""}</div>`).join("")}</div>
       ${buttons(c.options, false)}`);
     wire(el, (v) => (v === "edit" ? null : ["/api/decide", {choice: v}]));
   } else if (c.kind === "none") {
@@ -244,17 +442,26 @@ function render() {
     wire(el, (v) => (v === "retry" ? "retry" : null));
   } else if (c.kind === "saved") {
     el = card("saved", `<h2>✓ Saved</h2>${ruleBox(c.rules)}${neverBox(c.never)}
-      <div class="why">Saved in this prototype only. <span class="planned">sending it to Google Home or Home Assistant: planned</span></div>`, "saved");
+      <div class="why">Saved in this prototype only. It has not been sent to a home device.</div><div class="row"><button class="primary" id="new-request">Start another automation →</button></div>`, "saved");
+    el.querySelector("#new-request").onclick = newRequest;
   } else {
     editRequest();
     return;
+  }
+  if (["confirm", "choose"].includes(c.kind)) wireEventReview(el);
+  if (c.kind !== "saved") {
+    const back = document.createElement("button");
+    back.className = "back-step";
+    back.textContent = view.can_back ? "← Back to previous step" : "← Back to edit request";
+    back.onclick = () => view.can_back ? act("/api/back", {}, back) : sendEdit(back);
+    el.prepend(back);
   }
   thread.append(el);
   renderInspect(view.inspect);
   // Focus the new card, not its first button: a pre-focused Yes or Save would be a default answer
   // chosen for the person (Lecture 06: defaults and anchors are decisions made on the user's behalf).
   el.setAttribute("tabindex", "-1");
-  el.scrollIntoView({block: "nearest"});
+  $(".progress").scrollIntoView({block: "start", behavior: "instant"});
   el.focus({preventScroll: true});
 }
 
@@ -278,10 +485,18 @@ async function sendEdit(button) {
   editRequest();
 }
 
+function newRequest() {
+  sessionStorage.removeItem("automation-session"); pendingAction = null; view = null;
+  $("#req").value = ""; $("#thread").innerHTML = ""; status("");
+  showStep("describe");
+  $("#req").focus(); $("#req").scrollIntoView({block: "nearest"});
+}
 function editRequest() {
+  sessionStorage.removeItem("automation-session"); pendingAction = null;
+  showStep("describe");
   $("#req").value = view.request;
   $("#thread").innerHTML = "";
-  status("Edit your request, then choose Create rule.");
+  status("Edit your request, then choose Check my automation.");
   $("#req").focus();
   $("#req").scrollIntoView({block: "nearest"});
 }
@@ -302,7 +517,7 @@ function renderInspect(i) {
     ${i.sent && i.sent.request ? `<pre>${esc(i.sent.request)}</pre><details><summary>Instruction (prompt ${esc(i.sent.prompt_version)})</summary><pre>${esc(i.sent.instruction)}</pre></details>` : "<p class='small'>Nothing (no model call for this source).</p>"}
     <h3>${src.kind === "fixed" ? "The hand-written readings (Lab 3)" : "The model's reply"}</h3><pre>${esc(i.raw_reply || "(none)")}</pre>
     <h3>Readings after the checks</h3>${i.readings.map((r) => `<div><b>${esc(r.id)}</b> (${esc(r.label)}): ${esc(r.text)}</div>`).join("") || "<p class='small'>None.</p>"}
-    ${i.merged.length ? `<div class="small">Merged as identical in every scenario: ${esc(i.merged.map((m) => m.join(" = ")).join("; "))}</div>` : ""}
+    ${i.merged.length ? `<div class="small">Merged as identical across supported states and events: ${esc(i.merged.map((m) => m.join(" = ")).join("; "))}</div>` : ""}
     ${i.unsupported.length ? `<div class="small">Outside the envelope: ${esc(i.unsupported.join("; "))}</div>` : ""}
     ${i.problems.length ? `<div class="small">Problems: ${esc(i.problems.join("; "))}</div>` : ""}
     <h3>Simulated outcome of each reading in each scenario</h3>${table}

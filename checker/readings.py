@@ -19,7 +19,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 
-from . import schema
+from . import schema, simulator
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -178,6 +178,10 @@ def interpret(request, text, source, context):
     result = schema.check(payload)
     generated.readings, generated.unsupported = result["readings"], result["unsupported"]
     generated.problems, generated.notes = result["problems"], result["notes"]
+    if not generated.problems and not generated.unsupported:
+        for reading in generated.readings:
+            if simulator.conflicts(reading):
+                generated.problems.append(f"{reading['id']} has conflicting on and off actions for the same event and conditions")
     if generated.problems:
         generated.error, generated.error_detail = "unusable", "; ".join(generated.problems)
     elif not generated.readings and not generated.unsupported:
