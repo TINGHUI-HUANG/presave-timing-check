@@ -70,10 +70,10 @@ Each commit message says what changed, why, and how it was checked.
 
 ## AI assistance
 
-- **Claude Code** (Anthropic, Claude Opus 5.5, desktop app). I asked it to read the brief, my A1 review, my Lab 3
-  work and the Week 1–4 slides, and to plan and build A2 with me. I approved its plan after adding two
+- **Claude Code** (Anthropic, Claude Opus 5.5, desktop app). I asked it to read the brief, my A1 review,
+  and the Week 1–4 slides, and to plan and build A2 with me. I approved its plan after adding two
   conditions: my Gemini key stays out of everything it writes, and it writes me a run guide in Chinese. It wrote
-  the code, tests, prompt, figures, this README and the report draft, and ran and clicked through the app.
+  the initial code, tests, prompt, figures, this README, and ran and clicked through the app.
 - **Gemini 3.5 Flash** proposes the readings at run time. It never sees the intended behaviours, and its replies
   pass the checks before anything reaches the screen. Only the example sentences were sent to it.
 
